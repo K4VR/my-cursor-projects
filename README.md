@@ -12,6 +12,12 @@ A local-first King James Version Bible study tool organized by book.
 - **Famous verses** — well-known passages with jump-to-context
 - **My Study** — review your notes/highlights; export/import JSON backups
 
+## Live site (GitHub Pages)
+
+After Pages is enabled on the repo (Settings → Pages → Source: **GitHub Actions**), the app is at:
+
+**https://k4vr.github.io/my-cursor-projects/**
+
 ## Develop
 
 ```bash

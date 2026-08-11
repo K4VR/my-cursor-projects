@@ -51,7 +51,7 @@ const xrefCache = new Map<string, CrossRefMap>()
 export async function loadBook(slug: string): Promise<BookData> {
   const cached = bookCache.get(slug)
   if (cached) return cached
-  const res = await fetch(`/data/kjv/${slug}.json`)
+  const res = await fetch(`${import.meta.env.BASE_URL}data/kjv/${slug}.json`)
   if (!res.ok) throw new Error(`Failed to load ${slug}`)
   const data = (await res.json()) as BookData
   bookCache.set(slug, data)
@@ -61,7 +61,7 @@ export async function loadBook(slug: string): Promise<BookData> {
 export async function loadCrossRefs(slug: string): Promise<CrossRefMap> {
   const cached = xrefCache.get(slug)
   if (cached) return cached
-  const res = await fetch(`/data/crossrefs/${slug}.json`)
+  const res = await fetch(`${import.meta.env.BASE_URL}data/crossrefs/${slug}.json`)
   if (!res.ok) return {}
   const data = (await res.json()) as CrossRefMap
   xrefCache.set(slug, data)

@@ -10,7 +10,7 @@ import { ThemesPage } from './pages/ThemesPage'
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/my-cursor-projects">
       <Routes>
         <Route element={<AppShell />}>
           <Route index element={<LibraryPage />} />
