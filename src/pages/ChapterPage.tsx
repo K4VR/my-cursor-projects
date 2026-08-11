@@ -6,6 +6,7 @@ import {
   getBook,
   loadBook,
   loadCrossRefs,
+  sortCrossRefs,
 } from '../data/catalog'
 import { useBookAnnotations, useVerseStudy } from '../lib/hooks'
 import type { BookData, CrossRefMap, HighlightColor, Verse } from '../types'
@@ -89,7 +90,9 @@ export function ChapterPage() {
     refresh()
   }
 
-  const verseXrefs = selectedVerse ? xrefs[`${chapter}:${selectedVerse}`] ?? [] : []
+  const verseXrefs = selectedVerse
+    ? sortCrossRefs(xrefs[`${chapter}:${selectedVerse}`] ?? [])
+    : []
 
   return (
     <div className="reader-layout">

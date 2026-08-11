@@ -1,11 +1,13 @@
 import booksJson from './books.json'
 import themesJson from './themes.json'
 import famousJson from './famous-verses.json'
-import type { BookData, BookMeta, CrossRefMap, FamousVerse, Theme } from '../types'
+import type { BookData, BookMeta, CrossRef, CrossRefMap, FamousVerse, Theme } from '../types'
 
 export const books: BookMeta[] = booksJson as BookMeta[]
 export const themes: Theme[] = themesJson as Theme[]
 export const famousVerses: FamousVerse[] = famousJson as FamousVerse[]
+
+const bookOrder = new Map(books.map((b, i) => [b.slug, i]))
 
 export function getBook(slug: string): BookMeta | undefined {
   return books.find((b) => b.slug === slug)
@@ -81,4 +83,15 @@ export async function loadVerseText(
 
 export function getTheme(id: string): Theme | undefined {
   return themes.find((t) => t.id === id)
+}
+
+/** Sort cross-references in canonical Bible book order, then chapter, then verse. */
+export function sortCrossRefs(refs: CrossRef[]): CrossRef[] {
+  return [...refs].sort((a, b) => {
+    const orderA = bookOrder.get(a.book) ?? Number.MAX_SAFE_INTEGER
+    const orderB = bookOrder.get(b.book) ?? Number.MAX_SAFE_INTEGER
+    if (orderA !== orderB) return orderA - orderB
+    if (a.chapter !== b.chapter) return a.chapter - b.chapter
+    return a.verse - b.verse
+  })
 }

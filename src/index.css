@@ -360,11 +360,23 @@ img {
   font-size: 1.22rem;
 }
 
-.hl-gold { background: linear-gradient(180deg, transparent 45%, rgba(232, 201, 106, 0.55) 45%); }
-.hl-sage { background: linear-gradient(180deg, transparent 45%, rgba(183, 208, 178, 0.65) 45%); }
-.hl-sky { background: linear-gradient(180deg, transparent 45%, rgba(183, 207, 227, 0.65) 45%); }
-.hl-rose { background: linear-gradient(180deg, transparent 45%, rgba(229, 183, 183, 0.65) 45%); }
-.hl-lilac { background: linear-gradient(180deg, transparent 45%, rgba(208, 192, 224, 0.7) 45%); }
+.hl-gold,
+.hl-sage,
+.hl-sky,
+.hl-rose,
+.hl-lilac {
+  border-radius: 4px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0.05em 0.15em;
+  margin: 0 -0.15em;
+}
+
+.hl-gold { background-color: rgba(232, 201, 106, 0.55); }
+.hl-sage { background-color: rgba(183, 208, 178, 0.65); }
+.hl-sky { background-color: rgba(183, 207, 227, 0.65); }
+.hl-rose { background-color: rgba(229, 183, 183, 0.65); }
+.hl-lilac { background-color: rgba(208, 192, 224, 0.7); }
 
 .study-panel {
   position: sticky;
