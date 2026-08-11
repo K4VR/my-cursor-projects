@@ -1,0 +1,142 @@
+[
+  {
+    "book": "john",
+    "chapter": 3,
+    "verse": 16,
+    "label": "For God so loved the world",
+    "category": "Gospel"
+  },
+  {
+    "book": "psalms",
+    "chapter": 23,
+    "verse": 1,
+    "label": "The Lord is my shepherd",
+    "category": "Comfort"
+  },
+  {
+    "book": "genesis",
+    "chapter": 1,
+    "verse": 1,
+    "label": "In the beginning God created",
+    "category": "Creation"
+  },
+  {
+    "book": "romans",
+    "chapter": 8,
+    "verse": 28,
+    "label": "All things work together for good",
+    "category": "Hope"
+  },
+  {
+    "book": "philippians",
+    "chapter": 4,
+    "verse": 13,
+    "label": "I can do all things through Christ",
+    "category": "Strength"
+  },
+  {
+    "book": "proverbs",
+    "chapter": 3,
+    "verse": 5,
+    "label": "Trust in the Lord with all thine heart",
+    "category": "Wisdom"
+  },
+  {
+    "book": "isaiah",
+    "chapter": 40,
+    "verse": 31,
+    "label": "They that wait upon the Lord",
+    "category": "Hope"
+  },
+  {
+    "book": "matthew",
+    "chapter": 6,
+    "verse": 33,
+    "label": "Seek ye first the kingdom of God",
+    "category": "Discipleship"
+  },
+  {
+    "book": "joshua",
+    "chapter": 1,
+    "verse": 9,
+    "label": "Be strong and of a good courage",
+    "category": "Courage"
+  },
+  {
+    "book": "jeremiah",
+    "chapter": 29,
+    "verse": 11,
+    "label": "Thoughts of peace, and not of evil",
+    "category": "Hope"
+  },
+  {
+    "book": "romans",
+    "chapter": 12,
+    "verse": 2,
+    "label": "Be not conformed to this world",
+    "category": "Discipleship"
+  },
+  {
+    "book": "ephesians",
+    "chapter": 2,
+    "verse": 8,
+    "label": "By grace are ye saved through faith",
+    "category": "Salvation"
+  },
+  {
+    "book": "psalms",
+    "chapter": 46,
+    "verse": 10,
+    "label": "Be still, and know that I am God",
+    "category": "Peace"
+  },
+  {
+    "book": "matthew",
+    "chapter": 11,
+    "verse": 28,
+    "label": "Come unto me, all ye that labour",
+    "category": "Comfort"
+  },
+  {
+    "book": "1-corinthians",
+    "chapter": 13,
+    "verse": 13,
+    "label": "Faith, hope, charity",
+    "category": "Love"
+  },
+  {
+    "book": "revelation",
+    "chapter": 21,
+    "verse": 4,
+    "label": "God shall wipe away all tears",
+    "category": "Hope"
+  },
+  {
+    "book": "galatians",
+    "chapter": 5,
+    "verse": 22,
+    "label": "Fruit of the Spirit",
+    "category": "Discipleship"
+  },
+  {
+    "book": "hebrews",
+    "chapter": 11,
+    "verse": 1,
+    "label": "Faith is the substance of things hoped for",
+    "category": "Faith"
+  },
+  {
+    "book": "psalms",
+    "chapter": 119,
+    "verse": 105,
+    "label": "Thy word is a lamp unto my feet",
+    "category": "Scripture"
+  },
+  {
+    "book": "micah",
+    "chapter": 6,
+    "verse": 8,
+    "label": "Do justly, love mercy, walk humbly",
+    "category": "Discipleship"
+  }
+]
