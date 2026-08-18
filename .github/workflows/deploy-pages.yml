@@ -32,8 +32,21 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Build
+      - name: Build KJV Study
         run: npm run build
+
+      - name: Build Ledger
+        working-directory: ledger
+        env:
+          GITHUB_PAGES: '1'
+        run: |
+          npm ci
+          npm run build
+
+      - name: Publish Ledger next to KJV Study
+        run: |
+          mkdir -p dist/ledger
+          cp -r ledger/dist/. dist/ledger/
 
       - name: SPA fallback for GitHub Pages
         run: cp dist/index.html dist/404.html
