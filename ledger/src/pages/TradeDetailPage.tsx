@@ -22,7 +22,7 @@ export function TradeDetailPage() {
   async function handleDelete() {
     if (!confirm(`Delete ${trade.symbol} from the journal? This cannot be undone.`)) return
     await deleteTrade(trade.id)
-    navigate('/journal/trades')
+    navigate('/trades')
   }
 
   return (
@@ -40,7 +40,7 @@ export function TradeDetailPage() {
           </div>
         </div>
         <div className="ledger-actions">
-          <Link className="l-btn l-btn-primary" to={`/journal/trades/${trade.id}/edit`}>
+          <Link className="l-btn l-btn-primary" to={`/trades/${trade.id}/edit`}>
             Edit
           </Link>
           <button type="button" className="l-btn l-btn-danger" onClick={() => void handleDelete()}>

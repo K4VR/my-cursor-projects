@@ -26,10 +26,10 @@ export function DashboardPage() {
           </p>
         </div>
         <div className="ledger-actions">
-          <Link className="l-btn l-btn-primary" to="/journal/trades/new">
+          <Link className="l-btn l-btn-primary" to="/trades/new">
             Log trade
           </Link>
-          <Link className="l-btn" to="/journal/trades">
+          <Link className="l-btn" to="/trades">
             All trades
           </Link>
         </div>
@@ -39,7 +39,7 @@ export function DashboardPage() {
         <div className="empty">
           <p style={{ margin: 0 }}>No trades yet. Log the first one, or load a sample book to explore the dashboard.</p>
           <div className="ledger-actions" style={{ marginTop: '0.9rem' }}>
-            <Link className="l-btn l-btn-primary" to="/journal/trades/new">
+            <Link className="l-btn l-btn-primary" to="/trades/new">
               Log trade
             </Link>
             <button
@@ -165,10 +165,10 @@ export function DashboardPage() {
                     {[...summary.closed].reverse().slice(0, 8).map((trade) => {
                       const r = rMultiple(trade)
                       return (
-                        <tr key={trade.id} onClick={() => navigate(`/journal/trades/${trade.id}`)}>
+                        <tr key={trade.id} onClick={() => navigate(`/trades/${trade.id}`)}>
                           <td className="muted">{trade.exitDate}</td>
                           <td>
-                            <Link to={`/journal/trades/${trade.id}`}>{trade.symbol}</Link>
+                            <Link to={`/trades/${trade.id}`}>{trade.symbol}</Link>
                           </td>
                           <td>
                             <SideBadge side={trade.side} />

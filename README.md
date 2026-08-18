@@ -1,17 +1,8 @@
-# my-cursor-projects
-
-Local-first personal tools, deployed together on GitHub Pages:
-
-**https://k4vr.github.io/my-cursor-projects/**
-
-| App | Path |
-| --- | --- |
-| [Ledger — Stock Trading Journal](#ledger--stock-trading-journal) | `/` and `/journal` |
-| [KJV Study](#kjv-study) | `/library` |
-
-## KJV Study
+# KJV Study
 
 A local-first King James Version Bible study tool organized by book.
+
+## Features
 
 - **Library** — browse all 66 books (Old & New Testament)
 - **Chapter reader** — read KJV text with previous/next navigation
@@ -21,21 +12,11 @@ A local-first King James Version Bible study tool organized by book.
 - **Famous verses** — well-known passages with jump-to-context
 - **My Study** — review your notes/highlights; export/import JSON backups
 
-Live: **https://k4vr.github.io/my-cursor-projects/library**
+## Live site (GitHub Pages)
 
-## Ledger — Stock Trading Journal
+After Pages is enabled on the repo (Settings → Pages → Source: **GitHub Actions**), the app is at:
 
-A local-first journal for stock trades: fills, risk, and review notes, with performance stats.
-
-- **Dashboard** — realized P&L, equity curve, win rate, profit factor, expectancy, average R, max drawdown, open positions
-- **Trade log** — long/short, size, entry/exit, fees, stop, target, setup, tags, grade
-- **Review** — thesis, emotion, mistakes, and lessons per trade
-- **Analytics** — breakdowns by symbol, setup, grade, side, and weekday
-- **Backup** — export/import JSON or CSV; optional demo journal
-
-Live: **https://k4vr.github.io/my-cursor-projects/** (redirects to `/journal`)
-
-Trades never leave this browser unless you export a backup.
+**https://k4vr.github.io/my-cursor-projects/**
 
 ## Develop
 
@@ -57,4 +38,4 @@ npm run preview
 - **Scripture text:** King James Version (public domain), sourced via community JSON editions.
 - **Cross-references:** Derived from [OpenBible.info](https://www.openbible.info/labs/cross-references/) / Treasury of Scripture Knowledge (CC BY), via structured exports used by kjvstudy.org.
 
-Personal notes, highlights, custom themes, and trade records never leave your browser unless you export a backup.
+Personal notes, highlights, and custom themes never leave your browser unless you export a backup.

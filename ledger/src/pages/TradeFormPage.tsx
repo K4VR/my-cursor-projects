@@ -24,7 +24,7 @@ export function TradeFormPage() {
       <TradeForm
         initial={trade}
         submitLabel={isNew ? 'Save trade' : 'Save changes'}
-        onCancel={() => navigate(isNew ? '/journal/trades' : `/journal/trades/${id}`)}
+        onCancel={() => navigate(isNew ? '/trades' : `/trades/${id}`)}
         onSubmit={async (draft) => {
           if (isNew) {
             const next: Trade = {
@@ -35,12 +35,12 @@ export function TradeFormPage() {
               updatedAt: Date.now(),
             }
             await saveTrade(next)
-            navigate(`/journal/trades/${next.id}`)
+            navigate(`/trades/${next.id}`)
             return
           }
           if (!trade) return
           await persist({ ...trade, ...draft })
-          navigate(`/journal/trades/${trade.id}`)
+          navigate(`/trades/${trade.id}`)
         }}
       />
     </div>

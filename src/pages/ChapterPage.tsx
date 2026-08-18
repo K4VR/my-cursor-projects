@@ -69,7 +69,7 @@ export function ChapterPage() {
   }, [study.color, selectedVerse, refresh])
 
   if (!book || !chapter || chapter < 1 || chapter > book.chapters) {
-    return <Navigate to="/library" replace />
+    return <Navigate to="/" replace />
   }
 
   const verses: Verse[] = data?.chapters[String(chapter)] ?? []

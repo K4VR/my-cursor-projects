@@ -5,7 +5,7 @@ export function BookPage() {
   const { bookSlug = '' } = useParams()
   const book = getBook(bookSlug)
 
-  if (!book) return <Navigate to="/library" replace />
+  if (!book) return <Navigate to="/" replace />
 
   const chapters = Array.from({ length: book.chapters }, (_, i) => i + 1)
 

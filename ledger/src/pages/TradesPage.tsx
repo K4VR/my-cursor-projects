@@ -49,7 +49,7 @@ export function TradesPage() {
             {filtered.length} shown{filtered.length !== trades.length ? ` of ${trades.length}` : ''}.
           </p>
         </div>
-        <Link className="l-btn l-btn-primary" to="/journal/trades/new">
+        <Link className="l-btn l-btn-primary" to="/trades/new">
           Log trade
         </Link>
       </header>
@@ -105,7 +105,7 @@ export function TradesPage() {
                   {filtered.map((trade) => {
                     const r = rMultiple(trade)
                     return (
-                      <tr key={trade.id} onClick={() => navigate(`/journal/trades/${trade.id}`)}>
+                      <tr key={trade.id} onClick={() => navigate(`/trades/${trade.id}`)}>
                         <td className="muted">{formatDate(trade.entryDate)}</td>
                         <td className="mono">{trade.symbol}</td>
                         <td>

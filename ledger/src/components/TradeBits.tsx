@@ -15,7 +15,7 @@ export function PnlText({ trade }: { trade: Trade }) {
 
 export function TradeCard({ trade }: { trade: Trade }) {
   return (
-    <Link className="panel trade-card" to={`/journal/trades/${trade.id}`}>
+    <Link className="panel trade-card" to={`/trades/${trade.id}`}>
       <header>
         <strong>{trade.symbol}</strong>
         <PnlText trade={trade} />

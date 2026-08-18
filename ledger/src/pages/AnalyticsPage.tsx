@@ -97,7 +97,7 @@ function GroupTable({ title, rows }: { title: string; rows: GroupStats[] }) {
               <tr key={row.key}>
                 <td>
                   {title === 'By symbol' ? (
-                    <Link to={`/journal/trades?q=${encodeURIComponent(row.key)}`}>{row.key}</Link>
+                    <Link to={`/trades?q=${encodeURIComponent(row.key)}`}>{row.key}</Link>
                   ) : (
                     row.key
                   )}
