@@ -1,12 +1,14 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { EquityChart } from '../components/EquityChart'
 import { PnlText, SideBadge, TradeCard } from '../components/TradeBits'
+import { replaceAllTrades, saveSettings } from '../lib/db'
+import { demoTrades } from '../lib/demo'
 import { useJournal } from '../lib/hooks'
 import { formatMoney, formatNumber, formatPct, formatSignedMoney, pnlClass } from '../lib/money'
 import { realizedPnl, rMultiple, summarize } from '../lib/stats'
 
 export function DashboardPage() {
-  const { trades, settings, ready } = useJournal()
+  const { trades, settings, ready, refresh } = useJournal()
   const navigate = useNavigate()
   if (!ready) return <p className="muted">Loading journal…</p>
 
@@ -35,8 +37,23 @@ export function DashboardPage() {
 
       {trades.length === 0 ? (
         <div className="empty">
-          No trades yet. Log the first one, or load the demo book from{' '}
-          <Link to="/journal/settings">Settings</Link> to explore the dashboard.
+          <p style={{ margin: 0 }}>No trades yet. Log the first one, or load a sample book to explore the dashboard.</p>
+          <div className="ledger-actions" style={{ marginTop: '0.9rem' }}>
+            <Link className="l-btn l-btn-primary" to="/journal/trades/new">
+              Log trade
+            </Link>
+            <button
+              type="button"
+              className="l-btn"
+              onClick={() => {
+                void replaceAllTrades(demoTrades())
+                  .then(() => saveSettings({ startingCapital: 25_000 }))
+                  .then(() => refresh())
+              }}
+            >
+              Load demo journal
+            </button>
+          </div>
         </div>
       ) : (
         <>
