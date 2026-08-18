@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AppShell } from './components/AppShell'
+import { JournalApp } from './journal/JournalApp'
 import { BookPage } from './pages/BookPage'
 import { ChapterPage } from './pages/ChapterPage'
 import { FamousPage } from './pages/FamousPage'
@@ -12,6 +13,7 @@ export default function App() {
   return (
     <BrowserRouter basename="/my-cursor-projects">
       <Routes>
+        <Route path="journal/*" element={<JournalApp />} />
         <Route element={<AppShell />}>
           <Route index element={<LibraryPage />} />
           <Route path="book/:bookSlug" element={<BookPage />} />

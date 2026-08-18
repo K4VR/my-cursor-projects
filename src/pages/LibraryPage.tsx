@@ -40,6 +40,8 @@ export function LibraryPage() {
       <p className="footer-note">
         Scripture text: King James Version (public domain). Cross-references
         derived from OpenBible.info / Treasury of Scripture Knowledge (CC BY).
+        {' '}
+        <Link to="/journal">Stock trading journal</Link>
       </p>
     </div>
   )
