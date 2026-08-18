@@ -5,6 +5,7 @@ const links = [
   { to: '/themes', label: 'Themes' },
   { to: '/famous', label: 'Famous' },
   { to: '/my-study', label: 'My Study' },
+  { to: '/journal', label: 'Ledger' },
 ]
 
 export function AppShell() {
