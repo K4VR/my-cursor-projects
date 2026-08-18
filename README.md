@@ -6,8 +6,8 @@ Local-first personal tools, deployed together on GitHub Pages:
 
 | App | Path |
 | --- | --- |
-| [KJV Study](#kjv-study) | `/` |
-| [Ledger — Stock Trading Journal](#ledger--stock-trading-journal) | `/journal` |
+| [Ledger — Stock Trading Journal](#ledger--stock-trading-journal) | `/` and `/journal` |
+| [KJV Study](#kjv-study) | `/library` |
 
 ## KJV Study
 
@@ -21,7 +21,7 @@ A local-first King James Version Bible study tool organized by book.
 - **Famous verses** — well-known passages with jump-to-context
 - **My Study** — review your notes/highlights; export/import JSON backups
 
-Live: **https://k4vr.github.io/my-cursor-projects/**
+Live: **https://k4vr.github.io/my-cursor-projects/library**
 
 ## Ledger — Stock Trading Journal
 
@@ -33,7 +33,7 @@ A local-first journal for stock trades: fills, risk, and review notes, with perf
 - **Analytics** — breakdowns by symbol, setup, grade, side, and weekday
 - **Backup** — export/import JSON or CSV; optional demo journal
 
-Live: **https://k4vr.github.io/my-cursor-projects/journal**
+Live: **https://k4vr.github.io/my-cursor-projects/** (redirects to `/journal`)
 
 Trades never leave this browser unless you export a backup.
 

@@ -51,7 +51,7 @@ export function JournalShell() {
                 {link.label}
               </NavLink>
             ))}
-            <NavLink to="/" className="ledger-switch">
+            <NavLink to="/library" className="ledger-switch">
               KJV Study
             </NavLink>
           </nav>

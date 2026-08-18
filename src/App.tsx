@@ -21,6 +21,7 @@ export default function App() {
   return (
     <BrowserRouter basename={basename}>
       <Routes>
+        <Route index element={<Navigate to="/journal" replace />} />
         <Route path="journal" element={<JournalShell />}>
           <Route index element={<DashboardPage />} />
           <Route path="trades" element={<TradesPage />} />
@@ -31,14 +32,14 @@ export default function App() {
           <Route path="settings" element={<SettingsPage />} />
         </Route>
         <Route element={<AppShell />}>
-          <Route index element={<LibraryPage />} />
+          <Route path="library" element={<LibraryPage />} />
           <Route path="book/:bookSlug" element={<BookPage />} />
           <Route path="read/:bookSlug/:chapterNum" element={<ChapterPage />} />
           <Route path="themes" element={<ThemesPage />} />
           <Route path="themes/:themeId" element={<ThemeDetailPage />} />
           <Route path="famous" element={<FamousPage />} />
           <Route path="my-study" element={<MyStudyPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<Navigate to="/library" replace />} />
         </Route>
       </Routes>
     </BrowserRouter>
