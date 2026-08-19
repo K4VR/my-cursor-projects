@@ -43,10 +43,24 @@ jobs:
           npm ci
           npm run build
 
+      - name: Build Fundamentals
+        working-directory: fundamentals
+        env:
+          GITHUB_PAGES: '1'
+          VITE_API_URL: ${{ vars.FUNDAMENTALS_API_URL }}
+        run: |
+          npm ci
+          npm run build
+
       - name: Publish Ledger next to KJV Study
         run: |
           mkdir -p dist/ledger
           cp -r ledger/dist/. dist/ledger/
+
+      - name: Publish Fundamentals next to KJV Study
+        run: |
+          mkdir -p dist/fundamentals
+          cp -r fundamentals/dist/. dist/fundamentals/
 
       - name: SPA fallback for GitHub Pages
         run: cp dist/index.html dist/404.html
