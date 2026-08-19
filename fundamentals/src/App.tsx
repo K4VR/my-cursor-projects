@@ -3,6 +3,7 @@ import type { AnalysisResult } from './types.ts'
 import { AdvancedWorksheet } from './components/AdvancedWorksheet.tsx'
 import { ScoredWorksheet } from './components/ScoredWorksheet.tsx'
 import { TickerBar } from './components/TickerBar.tsx'
+import { analyzeTicker, isLikelyStaticHost } from './lib/api.ts'
 
 type Tab = 'advanced' | 'scored'
 
@@ -20,13 +21,18 @@ export default function App() {
     setLoading(true)
     setError(null)
     try {
-      const resp = await fetch(`/api/analyze/${encodeURIComponent(next)}`)
-      const data = await resp.json()
-      if (!resp.ok) throw new Error(data.error ?? 'Analysis failed.')
+      const data = await analyzeTicker(next)
       setResult(data as AnalysisResult)
     } catch (err) {
       setResult(null)
-      setError(err instanceof Error ? err.message : 'Analysis failed.')
+      const message = err instanceof Error ? err.message : 'Analysis failed.'
+      if (isLikelyStaticHost() && message.toLowerCase().includes('fetch')) {
+        setError(
+          'Live data is not available on the GitHub Pages preview alone. Use the full hosted app (Render) or ask to have FUNDAMENTALS_API_URL configured for this site.',
+        )
+      } else {
+        setError(message)
+      }
     } finally {
       setLoading(false)
     }
@@ -61,12 +67,26 @@ export default function App() {
             <h1>Fundamental stock evaluation</h1>
             <p>
               Enter a ticker to populate the Advanced Peer-to-Peer worksheet. Data is pulled from Yahoo Finance
-              (earnings estimates &amp; history) and Finviz (statistics), matching the spreadsheet workflow.
+              and Finviz, matching the spreadsheet workflow.
             </p>
             <p className="fundamentals-note">
-              Nothing is saved — refresh whenever you start a new research session. Run locally with{' '}
-              <code>npm run dev</code> so the data API is available.
+              <strong>No npm required on your computer.</strong> Use the full hosted app (UI + data) after a
+              one-time cloud deploy, or open this page from a host that includes the API.
             </p>
+            <ul className="fundamentals-help-list">
+              <li>
+                <strong>Recommended:</strong> Deploy once on{' '}
+                <a href="https://render.com/docs/infrastructure-as-code" target="_blank" rel="noreferrer">
+                  Render
+                </a>{' '}
+                using the repo&apos;s <code>render.yaml</code> (Render installs Node and builds in the cloud).
+              </li>
+              <li>
+                <strong>GitHub Pages</strong> hosts this UI at{' '}
+                <code>/my-cursor-projects/fundamentals/</code> — set repo variable{' '}
+                <code>FUNDAMENTALS_API_URL</code> to point at your Render service for live fetches.
+              </li>
+            </ul>
           </section>
         ) : null}
 

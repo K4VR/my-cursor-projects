@@ -161,6 +161,21 @@ html.fundamentals-root .fundamentals-note code {
   color: var(--fn-gold);
 }
 
+html.fundamentals-root .fundamentals-help-list {
+  margin: 1rem 0 0;
+  padding-left: 1.2rem;
+  color: var(--fn-muted);
+  line-height: 1.6;
+}
+
+html.fundamentals-root .fundamentals-help-list a {
+  color: var(--fn-blue);
+}
+
+html.fundamentals-root .fundamentals-help-list strong {
+  color: var(--fn-ink);
+}
+
 html.fundamentals-root .fundamentals-error {
   margin-top: 1rem;
   padding: 0.85rem 1rem;
