@@ -1,8 +1,9 @@
-import { GRADES, newTradeId, type Grade, type Side, type Trade } from '../types'
+import { GRADES, DEFAULT_TAXABLE_ID, newAccountId, newTradeId, type Account, type Grade, type Side, type Trade } from '../types'
 import { positionState } from './position'
 import { realizedPnl } from './stats'
 
 const HEADERS = [
+  'account',
   'symbol',
   'side',
   'quantity',
@@ -34,13 +35,15 @@ function cell(value: string | number | null | undefined): string {
   return escapeCell(String(value))
 }
 
-export function tradesToCsv(trades: Trade[]): string {
+export function tradesToCsv(trades: Trade[], accounts: Account[] = []): string {
   const lines = [HEADERS.join(',')]
+  const nameOf = (id: string) => accounts.find((account) => account.id === id)?.name ?? ''
   for (const trade of trades) {
     const pnl = realizedPnl(trade)
     const state = positionState(trade)
     lines.push(
       [
+        cell(nameOf(trade.accountId)),
         cell(trade.symbol),
         cell(trade.side),
         cell(state.added),
@@ -133,14 +136,39 @@ function optStr(value: string | undefined): string | null {
   return t ? t : null
 }
 
-export function csvToTrades(text: string): Trade[] {
+export function csvToTrades(
+  text: string,
+  accounts: Account[],
+): { trades: Trade[]; newAccounts: Account[] } {
   const rows = parseRows(text)
-  if (rows.length === 0) return []
+  if (rows.length === 0) return { trades: [], newAccounts: [] }
   const header = rows[0].map((h) => h.trim().toLowerCase())
   const idx = (name: string) => header.indexOf(name.toLowerCase())
   const now = Date.now()
+  const known = [...accounts]
+  const newAccounts: Account[] = []
 
-  return rows.slice(1).map((row, i) => {
+  function resolveAccount(name: string): string {
+    const trimmed = name.trim()
+    if (!trimmed) {
+      return known.find((account) => account.id === DEFAULT_TAXABLE_ID)?.id ?? known[0]?.id ?? DEFAULT_TAXABLE_ID
+    }
+    const match = known.find((account) => account.name.toLowerCase() === trimmed.toLowerCase())
+    if (match) return match.id
+    const created: Account = {
+      id: newAccountId(),
+      name: trimmed,
+      broker: '',
+      startingCapital: 0,
+      archived: false,
+      createdAt: Date.now(),
+    }
+    known.push(created)
+    newAccounts.push(created)
+    return created.id
+  }
+
+  const trades = rows.slice(1).map((row, i) => {
     const get = (name: string) => {
       const at = idx(name)
       return at >= 0 ? row[at] : ''
@@ -156,6 +184,7 @@ export function csvToTrades(text: string): Trade[] {
 
     return {
       id: newTradeId(),
+      accountId: resolveAccount(get('account')),
       symbol: (get('symbol') || 'UNKNOWN').trim().toUpperCase(),
       side,
       quantity: num(get('quantity')),
@@ -178,4 +207,6 @@ export function csvToTrades(text: string): Trade[] {
       updatedAt: now + i,
     }
   })
+
+  return { trades, newAccounts }
 }

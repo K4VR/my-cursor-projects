@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
+import { useJournal } from '../lib/hooks'
 import '../journal.css'
 
 const FONT_HREF =
@@ -13,6 +14,8 @@ const links = [
 ]
 
 export function JournalShell() {
+  const { ready, visibleAccounts, activeAccountId, setActiveAccountId } = useJournal()
+
   useEffect(() => {
     document.documentElement.classList.add('ledger-root')
     document.title = 'Ledger — Stock Trading Journal'
@@ -32,6 +35,31 @@ export function JournalShell() {
             <strong>Ledger</strong>
             <span>Stock journal</span>
           </NavLink>
+          {ready ? (
+            <div className="account-switch" role="tablist" aria-label="Account">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeAccountId === 'all'}
+                className={activeAccountId === 'all' ? 'active' : undefined}
+                onClick={() => void setActiveAccountId('all')}
+              >
+                All
+              </button>
+              {visibleAccounts.map((account) => (
+                <button
+                  key={account.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={activeAccountId === account.id}
+                  className={activeAccountId === account.id ? 'active' : undefined}
+                  onClick={() => void setActiveAccountId(account.id)}
+                >
+                  {account.name}
+                </button>
+              ))}
+            </div>
+          ) : null}
           <nav className="ledger-nav" aria-label="Journal">
             {links.map((link) => (
               <NavLink

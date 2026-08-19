@@ -5,13 +5,16 @@ import { formatMoney, formatNumber, formatPct, formatSignedMoney, pnlClass } fro
 import { groupBy, summarize, weekdayLabel, type GroupStats } from '../lib/stats'
 
 export function AnalyticsPage() {
-  const { trades, settings, ready } = useJournal()
-  const summary = useMemo(() => summarize(trades, settings.startingCapital), [trades, settings])
+  const { filteredTrades, activeCapital, activeAccountId, activeAccount, accountLabel, ready } = useJournal()
+  const trades = filteredTrades
+  const summary = useMemo(() => summarize(trades, activeCapital), [trades, activeCapital])
   const bySymbol = useMemo(() => groupBy(trades, (t) => t.symbol), [trades])
   const bySetup = useMemo(() => groupBy(trades, (t) => t.setup || 'Unspecified'), [trades])
   const bySide = useMemo(() => groupBy(trades, (t) => t.side), [trades])
   const byGrade = useMemo(() => groupBy(trades, (t) => t.grade ?? 'Ungraded'), [trades])
   const byWeekday = useMemo(() => groupBy(trades, (t) => weekdayLabel(t.exitDate ?? t.entryDate)), [trades])
+  const byAccount = useMemo(() => groupBy(trades, (t) => accountLabel(t.accountId)), [trades, accountLabel])
+  const scope = activeAccountId === 'all' ? 'All accounts' : activeAccount?.name ?? 'Account'
 
   if (!ready) return <p className="muted">Loading analytics…</p>
 
@@ -20,7 +23,7 @@ export function AnalyticsPage() {
       <div>
         <header className="ledger-hero">
           <div>
-            <p className="ledger-kicker">Review</p>
+            <p className="ledger-kicker">{scope}</p>
             <h1>Analytics</h1>
           </div>
         </header>
@@ -33,7 +36,7 @@ export function AnalyticsPage() {
     <div>
       <header className="ledger-hero">
         <div>
-          <p className="ledger-kicker">Review</p>
+          <p className="ledger-kicker">{scope}</p>
           <h1>Analytics</h1>
           <p className="ledger-lede">
             Closed-trade breakdowns. Open positions are excluded until they are booked.
@@ -65,6 +68,7 @@ export function AnalyticsPage() {
       </div>
 
       <div className="stack">
+        {activeAccountId === 'all' ? <GroupTable title="By account" rows={byAccount} /> : null}
         <GroupTable title="By symbol" rows={bySymbol} />
         <GroupTable title="By setup" rows={bySetup} />
         <GroupTable title="By grade" rows={byGrade} />

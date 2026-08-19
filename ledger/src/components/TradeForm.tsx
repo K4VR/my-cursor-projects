@@ -1,12 +1,13 @@
 import { useMemo, useState, type FormEvent } from 'react'
-import { emptyTrade, GRADES, SETUPS, type Grade, type Side, type Trade } from '../types'
+import { emptyTrade, GRADES, SETUPS, type Account, type Grade, type Side, type Trade } from '../types'
 import { fillsFromSimpleDraft, isScaled } from '../lib/position'
 
 type Draft = Omit<Trade, 'id' | 'createdAt' | 'updatedAt'>
 
-function toDraft(trade?: Trade | null): Draft {
-  if (!trade) return emptyTrade()
+function toDraft(trade: Trade | null | undefined, defaultAccountId: string): Draft {
+  if (!trade) return emptyTrade(defaultAccountId)
   return {
+    accountId: trade.accountId || defaultAccountId,
     symbol: trade.symbol,
     side: trade.side,
     quantity: trade.quantity,
@@ -37,16 +38,20 @@ function parseTags(value: string): string[] {
 
 export function TradeForm({
   initial,
+  accounts,
+  defaultAccountId,
   onSubmit,
   onCancel,
   submitLabel,
 }: {
   initial?: Trade | null
+  accounts: Account[]
+  defaultAccountId: string
   onSubmit: (draft: Draft) => Promise<void> | void
   onCancel: () => void
   submitLabel: string
 }) {
-  const seed = useMemo(() => toDraft(initial), [initial])
+  const seed = useMemo(() => toDraft(initial, defaultAccountId), [initial, defaultAccountId])
   const scaled = Boolean(initial && isScaled(initial))
   const [draft, setDraft] = useState<Draft>(seed)
   const [closed, setClosed] = useState(seed.exitPrice != null && seed.exitDate != null)
@@ -99,6 +104,17 @@ export function TradeForm({
         </p>
       ) : null}
       <div className="form-grid">
+        <label className="l-field">
+          <span>Account</span>
+          <select value={draft.accountId} onChange={(e) => update('accountId', e.target.value)}>
+            {accounts.map((account) => (
+              <option key={account.id} value={account.id}>
+                {account.name}
+                {account.archived ? ' (archived)' : ''}
+              </option>
+            ))}
+          </select>
+        </label>
         <label className="l-field">
           <span>Symbol</span>
           <input

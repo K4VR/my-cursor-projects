@@ -1,25 +1,27 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { EquityChart } from '../components/EquityChart'
 import { PnlText, SideBadge, TradeCard } from '../components/TradeBits'
-import { replaceAllTrades, saveSettings } from '../lib/db'
-import { demoTrades } from '../lib/demo'
+import { loadDemoJournal } from '../lib/db'
 import { useJournal } from '../lib/hooks'
 import { formatMoney, formatNumber, formatPct, formatSignedMoney, pnlClass } from '../lib/money'
 import { realizedPnl, rMultiple, summarize } from '../lib/stats'
 
 export function DashboardPage() {
-  const { trades, settings, ready, refresh } = useJournal()
+  const { filteredTrades, activeCapital, activeAccountId, activeAccount, accountLabel, ready, refresh } = useJournal()
   const navigate = useNavigate()
   if (!ready) return <p className="muted">Loading journal…</p>
 
-  const summary = summarize(trades, settings.startingCapital)
-  const equity = summary.equity.at(-1)?.equity ?? settings.startingCapital
+  const trades = filteredTrades
+  const summary = summarize(trades, activeCapital)
+  const equity = summary.equity.at(-1)?.equity ?? activeCapital
+  const scope = activeAccountId === 'all' ? 'All accounts' : activeAccount?.name ?? 'Account'
+  const showAccount = activeAccountId === 'all'
 
   return (
     <div>
       <header className="ledger-hero">
         <div>
-          <p className="ledger-kicker">Overview</p>
+          <p className="ledger-kicker">{scope}</p>
           <h1>Dashboard</h1>
           <p className="ledger-lede">
             Realized P&amp;L, risk, and review notes stay in this browser. Nothing is uploaded.
@@ -37,22 +39,26 @@ export function DashboardPage() {
 
       {trades.length === 0 ? (
         <div className="empty">
-          <p style={{ margin: 0 }}>No trades yet. Log the first one, or load a sample book to explore the dashboard.</p>
+          <p style={{ margin: 0 }}>
+            {activeAccountId === 'all'
+              ? 'No trades yet. Log the first one, or load a sample book to explore the dashboard.'
+              : `No trades in ${scope} yet. Log one here, or switch to All.`}
+          </p>
           <div className="ledger-actions" style={{ marginTop: '0.9rem' }}>
             <Link className="l-btn l-btn-primary" to="/trades/new">
               Log trade
             </Link>
-            <button
-              type="button"
-              className="l-btn"
-              onClick={() => {
-                void replaceAllTrades(demoTrades())
-                  .then(() => saveSettings({ startingCapital: 25_000 }))
-                  .then(() => refresh())
-              }}
-            >
-              Load demo journal
-            </button>
+            {activeAccountId === 'all' ? (
+              <button
+                type="button"
+                className="l-btn"
+                onClick={() => {
+                  void loadDemoJournal().then(() => refresh())
+                }}
+              >
+                Load demo journal
+              </button>
+            ) : null}
           </div>
         </div>
       ) : (
@@ -66,7 +72,7 @@ export function DashboardPage() {
             <article className="stat-card">
               <p className="label">Equity</p>
               <p className="value">{formatMoney(equity)}</p>
-              <p className="hint">Start {formatMoney(settings.startingCapital)}</p>
+              <p className="hint">Start {formatMoney(activeCapital)}</p>
             </article>
             <article className="stat-card">
               <p className="label">Win rate</p>
@@ -101,7 +107,7 @@ export function DashboardPage() {
           <div className="dashboard-grid">
             <section className="panel">
               <h2>Equity curve</h2>
-              <EquityChart points={summary.equity} startingCapital={settings.startingCapital} />
+              <EquityChart points={summary.equity} startingCapital={activeCapital} />
             </section>
             <div className="stack">
               <section className="panel">
@@ -111,7 +117,11 @@ export function DashboardPage() {
                 ) : (
                   <div className="stack">
                     {summary.open.map((trade) => (
-                      <TradeCard key={trade.id} trade={trade} />
+                      <TradeCard
+                        key={trade.id}
+                        trade={trade}
+                        accountName={showAccount ? accountLabel(trade.accountId) : undefined}
+                      />
                     ))}
                   </div>
                 )}
@@ -155,6 +165,7 @@ export function DashboardPage() {
                     <tr>
                       <th>Exit</th>
                       <th>Symbol</th>
+                      {showAccount ? <th>Account</th> : null}
                       <th>Side</th>
                       <th>P&amp;L</th>
                       <th>R</th>
@@ -170,6 +181,7 @@ export function DashboardPage() {
                           <td>
                             <Link to={`/trades/${trade.id}`}>{trade.symbol}</Link>
                           </td>
+                          {showAccount ? <td>{accountLabel(trade.accountId)}</td> : null}
                           <td>
                             <SideBadge side={trade.side} />
                           </td>
@@ -190,7 +202,11 @@ export function DashboardPage() {
                 .reverse()
                 .slice(0, 6)
                 .map((trade) => (
-                  <TradeCard key={trade.id} trade={trade} />
+                  <TradeCard
+                    key={trade.id}
+                    trade={trade}
+                    accountName={showAccount ? accountLabel(trade.accountId) : undefined}
+                  />
                 ))}
             </div>
           </section>

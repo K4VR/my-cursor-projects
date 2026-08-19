@@ -57,6 +57,7 @@ html.ledger-root .ledger-top-inner {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 html.ledger-root .ledger-brand {
@@ -105,6 +106,65 @@ html.ledger-root .ledger-nav a:hover {
 html.ledger-root .ledger-nav .ledger-switch {
   color: var(--ledger-muted);
   font-size: 0.82rem;
+}
+
+html.ledger-root .account-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  flex: 1;
+  justify-content: center;
+}
+
+html.ledger-root .account-switch button {
+  appearance: none;
+  border: 1px solid var(--ledger-line);
+  background: #0f1720;
+  color: var(--ledger-soft);
+  border-radius: 999px;
+  padding: 0.32rem 0.75rem;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+html.ledger-root .account-switch button.active,
+html.ledger-root .account-switch button:hover {
+  background: var(--ledger-green-dim);
+  border-color: rgba(62, 224, 154, 0.4);
+  color: var(--ledger-green);
+}
+
+html.ledger-root .account-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+html.ledger-root .account-editor {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 8.5rem auto;
+  gap: 0.65rem;
+  align-items: end;
+  padding: 0.85rem;
+  border: 1px solid var(--ledger-line);
+  border-radius: 12px;
+  background: #0f1720;
+}
+
+html.ledger-root .account-editor.archived {
+  opacity: 0.72;
+}
+
+html.ledger-root .account-editor.add {
+  background: transparent;
+}
+
+html.ledger-root .account-editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
 }
 
 html.ledger-root .ledger-main {
@@ -587,6 +647,11 @@ html.ledger-root .fill-grid div span {
   html.ledger-root .form-grid .full {
     grid-column: 1 / -1;
   }
+
+  html.ledger-root .account-editor,
+  html.ledger-root .account-editor.add {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 @media (max-width: 720px) {
@@ -612,6 +677,17 @@ html.ledger-root .fill-grid div span {
 
   html.ledger-root .check-row {
     padding-top: 0;
+  }
+
+  html.ledger-root .account-switch {
+    justify-content: flex-start;
+    order: 3;
+    flex-basis: 100%;
+  }
+
+  html.ledger-root .account-editor,
+  html.ledger-root .account-editor.add {
+    grid-template-columns: 1fr;
   }
 }
 

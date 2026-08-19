@@ -2,7 +2,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { AdjustFillForm } from '../components/AdjustFillForm'
 import { SideBadge } from '../components/TradeBits'
 import { deleteTrade } from '../lib/db'
-import { useTrade } from '../lib/hooks'
+import { useJournal, useTrade } from '../lib/hooks'
 import { formatDate, formatMoney, formatNumber, formatSignedMoney, pnlClass } from '../lib/money'
 import { fillsOf, isScaled, positionState, removeFill } from '../lib/position'
 import { holdDays, plannedRisk, realizedPnl, rMultiple } from '../lib/stats'
@@ -11,6 +11,7 @@ export function TradeDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { trade, persist } = useTrade(id)
+  const { accountLabel, refresh } = useJournal()
 
   if (trade === undefined) return <p className="muted">Loading trade…</p>
   if (!trade) return <div className="empty">That trade is not in this journal.</div>
@@ -26,6 +27,7 @@ export function TradeDetailPage() {
   async function handleDelete() {
     if (!confirm(`Delete ${trade.symbol} from the journal? This cannot be undone.`)) return
     await deleteTrade(trade.id)
+    refresh()
     navigate('/trades')
   }
 
@@ -45,6 +47,7 @@ export function TradeDetailPage() {
           <h1 className="detail-symbol">{trade.symbol}</h1>
           <div className="detail-meta">
             <SideBadge side={trade.side} />
+            <span className="ledger-pill">{accountLabel(trade.accountId)}</span>
             <span>{formatDate(trade.entryDate)}</span>
             {state.lastTrimDate ? <span>→ {formatDate(state.lastTrimDate)}</span> : null}
             {isScaled(trade) ? <span className="ledger-pill">Scaled</span> : null}

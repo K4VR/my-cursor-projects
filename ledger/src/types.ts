@@ -13,8 +13,20 @@ export interface Fill {
   createdAt: number
 }
 
+export interface Account {
+  id: string
+  name: string
+  broker: string
+  startingCapital: number
+  archived: boolean
+  createdAt: number
+}
+
+export type AccountFilter = 'all' | string
+
 export interface Trade {
   id: string
+  accountId: string
   symbol: string
   side: Side
   quantity: number
@@ -39,17 +51,25 @@ export interface Trade {
 
 export interface JournalSettings {
   startingCapital: number
+  lastAccountId: AccountFilter
+  lastTradeAccountId: string
 }
 
 export interface JournalBackup {
   version: 1
   exportedAt: number
   settings: JournalSettings
+  accounts?: Account[]
   trades: Trade[]
 }
 
+export const DEFAULT_TAXABLE_ID = 'acct-taxable'
+export const DEFAULT_IRA_ID = 'acct-ira'
+
 export const DEFAULT_SETTINGS: JournalSettings = {
   startingCapital: 25_000,
+  lastAccountId: 'all',
+  lastTradeAccountId: DEFAULT_TAXABLE_ID,
 }
 
 export const SETUPS = [
@@ -73,9 +93,14 @@ export function newFillId(): string {
   return crypto.randomUUID()
 }
 
-export function emptyTrade(): Omit<Trade, 'id' | 'createdAt' | 'updatedAt'> {
+export function newAccountId(): string {
+  return crypto.randomUUID()
+}
+
+export function emptyTrade(accountId = DEFAULT_TAXABLE_ID): Omit<Trade, 'id' | 'createdAt' | 'updatedAt'> {
   const today = new Date().toISOString().slice(0, 10)
   return {
+    accountId,
     symbol: '',
     side: 'long',
     quantity: 0,

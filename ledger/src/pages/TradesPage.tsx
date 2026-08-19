@@ -7,7 +7,10 @@ import { isClosed, positionState } from '../lib/position'
 import { rMultiple } from '../lib/stats'
 
 export function TradesPage() {
-  const { trades, ready } = useJournal()
+  const { filteredTrades, activeAccountId, activeAccount, accountLabel, ready } = useJournal()
+  const trades = filteredTrades
+  const showAccount = activeAccountId === 'all'
+  const scope = activeAccountId === 'all' ? 'All accounts' : activeAccount?.name ?? 'Account'
   const navigate = useNavigate()
   const [params] = useSearchParams()
   const [query, setQuery] = useState(params.get('q') ?? '')
@@ -43,7 +46,7 @@ export function TradesPage() {
     <div>
       <header className="ledger-hero">
         <div>
-          <p className="ledger-kicker">Log</p>
+          <p className="ledger-kicker">{scope}</p>
           <h1>Trades</h1>
           <p className="ledger-lede">
             {filtered.length} shown{filtered.length !== trades.length ? ` of ${trades.length}` : ''}.
@@ -91,6 +94,7 @@ export function TradesPage() {
                   <tr>
                     <th>Entry</th>
                     <th>Symbol</th>
+                    {showAccount ? <th>Account</th> : null}
                     <th>Side</th>
                     <th>Qty</th>
                     <th>Entry $</th>
@@ -110,6 +114,7 @@ export function TradesPage() {
                       <tr key={trade.id} onClick={() => navigate(`/trades/${trade.id}`)}>
                         <td className="muted">{formatDate(trade.entryDate)}</td>
                         <td className="mono">{trade.symbol}</td>
+                        {showAccount ? <td>{accountLabel(trade.accountId)}</td> : null}
                         <td>
                           <SideBadge side={trade.side} />
                         </td>
@@ -136,7 +141,11 @@ export function TradesPage() {
           </div>
           <div className="mobile-cards">
             {filtered.map((trade) => (
-              <TradeCard key={trade.id} trade={trade} />
+              <TradeCard
+                key={trade.id}
+                trade={trade}
+                accountName={showAccount ? accountLabel(trade.accountId) : undefined}
+              />
             ))}
           </div>
         </>

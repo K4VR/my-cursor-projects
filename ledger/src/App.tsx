@@ -1,5 +1,6 @@
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { JournalShell } from './components/JournalShell'
+import { JournalProvider } from './lib/hooks'
 import { AnalyticsPage } from './pages/AnalyticsPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { SettingsPage } from './pages/SettingsPage'
@@ -10,6 +11,7 @@ import { TradesPage } from './pages/TradesPage'
 export default function App() {
   return (
     <HashRouter>
+      <JournalProvider>
       <Routes>
         <Route element={<JournalShell />}>
           <Route index element={<DashboardPage />} />
@@ -22,6 +24,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
+      </JournalProvider>
     </HashRouter>
   )
 }

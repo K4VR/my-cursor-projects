@@ -22,7 +22,7 @@ export function PnlText({ trade }: { trade: Trade }) {
   return <span className={`mono ${pnlClass(pnl)}`}>{formatSignedMoney(pnl)}</span>
 }
 
-export function TradeCard({ trade }: { trade: Trade }) {
+export function TradeCard({ trade, accountName }: { trade: Trade; accountName?: string }) {
   const state = positionState(trade)
   return (
     <Link className="panel trade-card" to={`/trades/${trade.id}`}>
@@ -33,6 +33,7 @@ export function TradeCard({ trade }: { trade: Trade }) {
       <div className="detail-meta">
         <SideBadge side={trade.side} />
         <span className="muted">{trade.entryDate}</span>
+        {accountName ? <span className="ledger-pill">{accountName}</span> : null}
         {trade.setup ? <span className="ledger-pill">{trade.setup}</span> : null}
         {isClosed(trade) ? null : (
           <span className="ledger-pill">{formatNumber(state.remaining, 0)} open</span>

@@ -1,5 +1,34 @@
-import { newFillId, newTradeId, type Fill, type Trade } from '../types'
+import {
+  DEFAULT_IRA_ID,
+  DEFAULT_TAXABLE_ID,
+  newFillId,
+  newTradeId,
+  type Account,
+  type Fill,
+  type Trade,
+} from '../types'
 
+export function demoAccounts(): Account[] {
+  const now = Date.now()
+  return [
+    {
+      id: DEFAULT_TAXABLE_ID,
+      name: 'Taxable',
+      broker: '',
+      startingCapital: 25_000,
+      archived: false,
+      createdAt: now,
+    },
+    {
+      id: DEFAULT_IRA_ID,
+      name: 'IRA',
+      broker: '',
+      startingCapital: 15_000,
+      archived: false,
+      createdAt: now + 1,
+    },
+  ]
+}
 
 function fill(
   kind: Fill['kind'],
@@ -14,12 +43,14 @@ function fill(
 }
 
 function t(
-  partial: Omit<Trade, 'id' | 'createdAt' | 'updatedAt' | 'fills'> & { fills?: Fill[]; createdAt?: number },
+  partial: Omit<Trade, 'id' | 'accountId' | 'createdAt' | 'updatedAt' | 'fills'> & { fills?: Fill[]; createdAt?: number },
+  accountId = DEFAULT_TAXABLE_ID,
 ): Trade {
   const createdAt = partial.createdAt ?? Date.parse(`${partial.entryDate}T15:00:00Z`)
   return {
     fills: [],
     ...partial,
+    accountId,
     id: newTradeId(),
     createdAt,
     updatedAt: createdAt + 86_400_000,
@@ -84,7 +115,7 @@ export function demoTrades(): Trade[] {
       emotion: 'Patient. Scaled risk down because it was a countertrend idea.',
       mistakes: '',
       lessons: 'Shorts work best when the failed break is obvious on the daily.',
-    }),
+    }, DEFAULT_IRA_ID),
     t({
       symbol: 'TSLA',
       side: 'long',
@@ -122,7 +153,7 @@ export function demoTrades(): Trade[] {
       emotion: 'Steady. Journaled the plan the night before.',
       mistakes: '',
       lessons: 'Overnight planning removes most of the morning noise.',
-    }),
+    }, DEFAULT_IRA_ID),
     t({
       symbol: 'AMD',
       side: 'long',
@@ -255,7 +286,7 @@ export function demoTrades(): Trade[] {
       emotion: 'Impatient. Entered before the reclaim was real.',
       mistakes: 'Anticipated the reclaim instead of waiting for it.',
       lessons: 'Index scalps need confirmation. No extra credit for being early.',
-    }),
+    }, DEFAULT_IRA_ID),
     t({
       symbol: 'NFLX',
       side: 'long',
@@ -293,7 +324,7 @@ export function demoTrades(): Trade[] {
       emotion: 'Slightly hesitant — mixed tape.',
       mistakes: 'The tape was not confirming defensive rotation.',
       lessons: 'Event trades still need a market regime that matches the story.',
-    }),
+    }, DEFAULT_IRA_ID),
     t({
       symbol: 'NVDA',
       side: 'long',
