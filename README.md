@@ -26,6 +26,11 @@ npm run download-data   # optional: refresh public KJV + cross-ref JSON
 npm run dev
 ```
 
+### Other apps in this repo
+
+- **Ledger** — stock trading journal at [`ledger/`](ledger/) → [/ledger/](https://k4vr.github.io/my-cursor-projects/ledger/)
+- **Fundamentals** — Advanced P2P fundamental analysis at [`fundamentals/`](fundamentals/) → [/fundamentals/](https://k4vr.github.io/my-cursor-projects/fundamentals/) (live data requires `npm run dev` locally)
+
 ## Build
 
 ```bash
