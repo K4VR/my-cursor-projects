@@ -1,10 +1,12 @@
 import { GRADES, newTradeId, type Grade, type Side, type Trade } from '../types'
+import { positionState } from './position'
 import { realizedPnl } from './stats'
 
 const HEADERS = [
   'symbol',
   'side',
   'quantity',
+  'remaining',
   'entryPrice',
   'entryDate',
   'exitPrice',
@@ -36,11 +38,13 @@ export function tradesToCsv(trades: Trade[]): string {
   const lines = [HEADERS.join(',')]
   for (const trade of trades) {
     const pnl = realizedPnl(trade)
+    const state = positionState(trade)
     lines.push(
       [
         cell(trade.symbol),
         cell(trade.side),
-        cell(trade.quantity),
+        cell(state.added),
+        cell(state.remaining),
         cell(trade.entryPrice),
         cell(trade.entryDate),
         cell(trade.exitPrice),
@@ -169,6 +173,7 @@ export function csvToTrades(text: string): Trade[] {
       emotion: get('emotion') || '',
       mistakes: get('mistakes') || '',
       lessons: get('lessons') || '',
+      fills: [],
       createdAt: now + i,
       updatedAt: now + i,
     }

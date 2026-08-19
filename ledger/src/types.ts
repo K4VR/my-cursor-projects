@@ -1,5 +1,17 @@
 export type Side = 'long' | 'short'
 export type Grade = 'A+' | 'A' | 'B' | 'C' | 'D' | 'F'
+export type FillKind = 'add' | 'trim'
+
+export interface Fill {
+  id: string
+  kind: FillKind
+  date: string
+  price: number
+  quantity: number
+  fees: number
+  note: string
+  createdAt: number
+}
 
 export interface Trade {
   id: string
@@ -20,6 +32,7 @@ export interface Trade {
   emotion: string
   mistakes: string
   lessons: string
+  fills: Fill[]
   createdAt: number
   updatedAt: number
 }
@@ -52,11 +65,11 @@ export const SETUPS = [
 
 export const GRADES: Grade[] = ['A+', 'A', 'B', 'C', 'D', 'F']
 
-export function isClosed(trade: Trade): boolean {
-  return trade.exitPrice != null && trade.exitDate != null
+export function newTradeId(): string {
+  return crypto.randomUUID()
 }
 
-export function newTradeId(): string {
+export function newFillId(): string {
   return crypto.randomUUID()
 }
 
@@ -80,5 +93,6 @@ export function emptyTrade(): Omit<Trade, 'id' | 'createdAt' | 'updatedAt'> {
     emotion: '',
     mistakes: '',
     lessons: '',
+    fills: [],
   }
 }

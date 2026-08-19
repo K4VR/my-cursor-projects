@@ -1,5 +1,6 @@
 import { useMemo, useState, type FormEvent } from 'react'
 import { emptyTrade, GRADES, SETUPS, type Grade, type Side, type Trade } from '../types'
+import { fillsFromSimpleDraft, isScaled } from '../lib/position'
 
 type Draft = Omit<Trade, 'id' | 'createdAt' | 'updatedAt'>
 
@@ -23,6 +24,7 @@ function toDraft(trade?: Trade | null): Draft {
     emotion: trade.emotion,
     mistakes: trade.mistakes,
     lessons: trade.lessons,
+    fills: trade.fills ?? [],
   }
 }
 
@@ -45,6 +47,7 @@ export function TradeForm({
   submitLabel: string
 }) {
   const seed = useMemo(() => toDraft(initial), [initial])
+  const scaled = Boolean(initial && isScaled(initial))
   const [draft, setDraft] = useState<Draft>(seed)
   const [closed, setClosed] = useState(seed.exitPrice != null && seed.exitDate != null)
   const [error, setError] = useState<string | null>(null)
@@ -60,11 +63,11 @@ export function TradeForm({
       setError('Symbol is required.')
       return
     }
-    if (draft.quantity <= 0 || draft.entryPrice <= 0) {
+    if (!scaled && (draft.quantity <= 0 || draft.entryPrice <= 0)) {
       setError('Quantity and entry price must be greater than zero.')
       return
     }
-    if (closed && (draft.exitPrice == null || !draft.exitDate)) {
+    if (!scaled && closed && (draft.exitPrice == null || !draft.exitDate)) {
       setError('Closed trades need an exit date and price.')
       return
     }
@@ -74,9 +77,10 @@ export function TradeForm({
       await onSubmit({
         ...draft,
         symbol: draft.symbol.trim().toUpperCase(),
-        exitPrice: closed ? draft.exitPrice : null,
-        exitDate: closed ? draft.exitDate : null,
-        fees: closed ? draft.fees : draft.fees || 0,
+        exitPrice: scaled ? draft.exitPrice : closed ? draft.exitPrice : null,
+        exitDate: scaled ? draft.exitDate : closed ? draft.exitDate : null,
+        fees: draft.fees || 0,
+        fills: scaled ? draft.fills : fillsFromSimpleDraft({ ...draft, exitPrice: closed ? draft.exitPrice : null, exitDate: closed ? draft.exitDate : null }),
       })
     } catch {
       setError('Could not save this trade.')
@@ -88,6 +92,12 @@ export function TradeForm({
   return (
     <form className="panel" onSubmit={(e) => void handleSubmit(e)}>
       {error ? <p className="message">{error}</p> : null}
+      {scaled ? (
+        <p className="muted" style={{ marginTop: 0 }}>
+          Size changes on a scaled trade are done with Add or Trim on the trade page. This form
+          keeps the thesis, stop, and grade.
+        </p>
+      ) : null}
       <div className="form-grid">
         <label className="l-field">
           <span>Symbol</span>
@@ -114,6 +124,8 @@ export function TradeForm({
             ))}
           </div>
         </div>
+        {!scaled ? (
+          <>
         <label className="l-field">
           <span>Quantity</span>
           <input
@@ -150,6 +162,8 @@ export function TradeForm({
             required
           />
         </label>
+          </>
+        ) : null}
         <label className="l-field">
           <span>Stop loss</span>
           <input
@@ -170,6 +184,8 @@ export function TradeForm({
             onChange={(e) => update('takeProfit', e.target.value === '' ? null : Number(e.target.value))}
           />
         </label>
+        {!scaled ? (
+          <>
         <label className="check-row">
           <input
             type="checkbox"
@@ -202,6 +218,8 @@ export function TradeForm({
             onChange={(e) => update('exitPrice', e.target.value === '' ? null : Number(e.target.value))}
           />
         </label>
+          </>
+        ) : null}
         <label className="l-field">
           <span>Setup</span>
           <input

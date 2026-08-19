@@ -1,11 +1,24 @@
-import { newTradeId, type Trade } from '../types'
+import { newFillId, newTradeId, type Fill, type Trade } from '../types'
 
+
+function fill(
+  kind: Fill['kind'],
+  date: string,
+  price: number,
+  quantity: number,
+  fees = 0,
+  note = '',
+  createdAt = Date.parse(`${date}T15:00:00Z`),
+): Fill {
+  return { id: newFillId(), kind, date, price, quantity, fees, note, createdAt }
+}
 
 function t(
-  partial: Omit<Trade, 'id' | 'createdAt' | 'updatedAt'> & { createdAt?: number },
+  partial: Omit<Trade, 'id' | 'createdAt' | 'updatedAt' | 'fills'> & { fills?: Fill[]; createdAt?: number },
 ): Trade {
   const createdAt = partial.createdAt ?? Date.parse(`${partial.entryDate}T15:00:00Z`)
   return {
+    fills: [],
     ...partial,
     id: newTradeId(),
     createdAt,
@@ -284,40 +297,48 @@ export function demoTrades(): Trade[] {
     t({
       symbol: 'NVDA',
       side: 'long',
-      quantity: 15,
-      entryPrice: 141.6,
+      quantity: 25,
+      entryPrice: 140.24,
       entryDate: '2026-08-06',
       exitPrice: null,
       exitDate: null,
-      fees: 0,
+      fees: 1.99,
       stopLoss: 136.4,
       takeProfit: 155,
       setup: 'Pullback',
       tags: ['semis', 'open'],
       grade: null,
-      thesis: 'Reset to the rising 21-day. Holding as long as the swing low is intact.',
+      thesis: 'Reset to the rising 21-day. Added on the next higher low.',
       emotion: 'Constructive. Size is 0.8R of usual.',
       mistakes: '',
       lessons: '',
+      fills: [
+        fill('add', '2026-08-06', 141.6, 15, 0, 'First lot'),
+        fill('add', '2026-08-11', 138.2, 10, 1.99, 'Added on the higher low'),
+      ],
     }),
     t({
       symbol: 'AAPL',
       side: 'long',
-      quantity: 30,
+      quantity: 20,
       entryPrice: 214.75,
       entryDate: '2026-08-12',
       exitPrice: null,
       exitDate: null,
-      fees: 0,
+      fees: 1.99,
       stopLoss: 209.5,
       takeProfit: 226,
       setup: 'Momentum',
       tags: ['tech', 'open'],
       grade: null,
-      thesis: 'Break and hold of the prior month high. Trail under daily higher lows.',
+      thesis: 'Break and hold of the prior month high. Took a third off into strength.',
       emotion: 'Neutral-positive.',
       mistakes: '',
       lessons: '',
+      fills: [
+        fill('add', '2026-08-12', 214.75, 30, 0, 'Opening lot'),
+        fill('trim', '2026-08-17', 219.4, 10, 1.99, 'Took a third off'),
+      ],
     }),
   ]
 }

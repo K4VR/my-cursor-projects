@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { DEFAULT_SETTINGS, type JournalSettings, type Trade } from '../types'
 import { getSettings, getTrade, getTrades, saveSettings, saveTrade } from './db'
+import { ensureFills } from './position'
 
 export function useJournal() {
   const [trades, setTrades] = useState<Trade[]>([])
@@ -53,8 +54,9 @@ export function useTrade(id: string | undefined) {
   useEffect(() => reload(), [reload])
 
   const persist = useCallback(async (next: Trade) => {
-    await saveTrade(next)
-    setTrade(next)
+    const stored = ensureFills({ ...next, symbol: next.symbol.trim().toUpperCase() })
+    await saveTrade(stored)
+    setTrade(stored)
   }, [])
 
   return { trade, persist, reload }

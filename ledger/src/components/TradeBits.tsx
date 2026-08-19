@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
-import { formatSignedMoney, pnlClass } from '../lib/money'
-import { isClosed, type Trade } from '../types'
+import { formatNumber, formatSignedMoney, pnlClass } from '../lib/money'
+import { isClosed, positionState } from '../lib/position'
+import type { Trade } from '../types'
 import { realizedPnl } from '../lib/stats'
 
 export function SideBadge({ side }: { side: Trade['side'] }) {
@@ -8,12 +9,21 @@ export function SideBadge({ side }: { side: Trade['side'] }) {
 }
 
 export function PnlText({ trade }: { trade: Trade }) {
+  const state = positionState(trade)
   const pnl = realizedPnl(trade)
   if (pnl == null) return <span className="muted">Open</span>
+  if (!state.closed) {
+    return (
+      <span className={`mono ${pnlClass(pnl)}`}>
+        {formatSignedMoney(pnl)} booked
+      </span>
+    )
+  }
   return <span className={`mono ${pnlClass(pnl)}`}>{formatSignedMoney(pnl)}</span>
 }
 
 export function TradeCard({ trade }: { trade: Trade }) {
+  const state = positionState(trade)
   return (
     <Link className="panel trade-card" to={`/trades/${trade.id}`}>
       <header>
@@ -24,7 +34,9 @@ export function TradeCard({ trade }: { trade: Trade }) {
         <SideBadge side={trade.side} />
         <span className="muted">{trade.entryDate}</span>
         {trade.setup ? <span className="ledger-pill">{trade.setup}</span> : null}
-        {isClosed(trade) ? null : <span className="ledger-pill">Open</span>}
+        {isClosed(trade) ? null : (
+          <span className="ledger-pill">{formatNumber(state.remaining, 0)} open</span>
+        )}
       </div>
     </Link>
   )

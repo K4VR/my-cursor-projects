@@ -3,8 +3,8 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { PnlText, SideBadge, TradeCard } from '../components/TradeBits'
 import { useJournal } from '../lib/hooks'
 import { formatDate, formatNumber } from '../lib/money'
+import { isClosed, positionState } from '../lib/position'
 import { rMultiple } from '../lib/stats'
-import { isClosed } from '../types'
 
 export function TradesPage() {
   const { trades, ready } = useJournal()
@@ -104,6 +104,8 @@ export function TradesPage() {
                 <tbody>
                   {filtered.map((trade) => {
                     const r = rMultiple(trade)
+                    const state = positionState(trade)
+                    const qty = state.closed ? state.added : state.remaining
                     return (
                       <tr key={trade.id} onClick={() => navigate(`/trades/${trade.id}`)}>
                         <td className="muted">{formatDate(trade.entryDate)}</td>
@@ -111,9 +113,14 @@ export function TradesPage() {
                         <td>
                           <SideBadge side={trade.side} />
                         </td>
-                        <td className="mono">{formatNumber(trade.quantity, 0)}</td>
-                        <td className="mono">{formatNumber(trade.entryPrice)}</td>
-                        <td className="mono">{trade.exitPrice == null ? '—' : formatNumber(trade.exitPrice)}</td>
+                        <td className="mono">
+                          {formatNumber(qty, 0)}
+                          {!state.closed && state.added !== state.remaining
+                            ? ` / ${formatNumber(state.added, 0)}`
+                            : ''}
+                        </td>
+                        <td className="mono">{formatNumber(state.avgEntry ?? trade.entryPrice)}</td>
+                        <td className="mono">{state.trimVwap == null ? '—' : formatNumber(state.trimVwap)}</td>
                         <td>
                           <PnlText trade={trade} />
                         </td>

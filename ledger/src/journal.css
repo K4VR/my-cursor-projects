@@ -339,6 +339,14 @@ html.ledger-root .trade-table tbody tr:hover {
   background: rgba(106, 166, 255, 0.06);
 }
 
+html.ledger-root .trade-table.fill-log tbody tr {
+  cursor: default;
+}
+
+html.ledger-root .trade-table.fill-log tbody tr:hover {
+  background: transparent;
+}
+
 html.ledger-root .mono {
   font-family: var(--ledger-mono);
 }

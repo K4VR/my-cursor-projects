@@ -5,6 +5,7 @@ import {
   type JournalSettings,
   type Trade,
 } from '../types'
+import { ensureFills } from './position'
 
 interface LedgerDB extends DBSchema {
   trades: {
@@ -37,7 +38,7 @@ function getDb() {
 export async function getTrades(): Promise<Trade[]> {
   const db = await getDb()
   const trades = await db.getAll('trades')
-  return trades.sort((a, b) => {
+  return trades.map(ensureFills).sort((a, b) => {
     const date = b.entryDate.localeCompare(a.entryDate)
     if (date !== 0) return date
     return b.updatedAt - a.updatedAt
@@ -46,13 +47,14 @@ export async function getTrades(): Promise<Trade[]> {
 
 export async function getTrade(id: string): Promise<Trade | undefined> {
   const db = await getDb()
-  return db.get('trades', id)
+  const record = await db.get('trades', id)
+  return record ? ensureFills(record) : undefined
 }
 
 export async function saveTrade(trade: Trade): Promise<void> {
   const db = await getDb()
   await db.put('trades', {
-    ...trade,
+    ...ensureFills(trade),
     symbol: trade.symbol.trim().toUpperCase(),
     updatedAt: Date.now(),
   })
@@ -67,14 +69,14 @@ export async function replaceAllTrades(trades: Trade[]): Promise<void> {
   const db = await getDb()
   const tx = db.transaction('trades', 'readwrite')
   await tx.store.clear()
-  await Promise.all(trades.map((trade) => tx.store.put(trade)))
+  await Promise.all(trades.map((trade) => tx.store.put(ensureFills(trade))))
   await tx.done
 }
 
 export async function addTrades(trades: Trade[]): Promise<void> {
   const db = await getDb()
   const tx = db.transaction('trades', 'readwrite')
-  await Promise.all(trades.map((trade) => tx.store.put(trade)))
+  await Promise.all(trades.map((trade) => tx.store.put(ensureFills(trade))))
   await tx.done
 }
 

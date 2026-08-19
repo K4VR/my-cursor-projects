@@ -1,28 +1,35 @@
-import { isClosed, type Trade } from '../types'
+import { isClosed, positionState, walkPosition } from './position'
+import type { Trade } from '../types'
 
 export function realizedPnl(trade: Trade): number | null {
-  if (trade.exitPrice == null) return null
-  const direction = trade.side === 'long' ? 1 : -1
-  return (trade.exitPrice - trade.entryPrice) * direction * trade.quantity - trade.fees
+  const state = positionState(trade)
+  if (state.trimmed <= 0) return state.closed ? 0 : null
+  return state.realized
 }
 
 export function plannedRisk(trade: Trade): number | null {
-  if (trade.stopLoss == null || trade.quantity <= 0) return null
-  const risk = Math.abs(trade.entryPrice - trade.stopLoss) * trade.quantity
+  const state = positionState(trade)
+  const price = state.closed ? state.addVwap : state.avgEntry
+  const qty = state.closed ? state.added : state.remaining
+  if (trade.stopLoss == null || price == null || qty <= 0) return null
+  const risk = Math.abs(price - trade.stopLoss) * qty
   return risk > 0 ? risk : null
 }
 
 export function rMultiple(trade: Trade): number | null {
   const pnl = realizedPnl(trade)
-  const risk = plannedRisk(trade)
-  if (pnl == null || risk == null) return null
+  const state = positionState(trade)
+  if (pnl == null || trade.stopLoss == null || state.addVwap == null || state.added <= 0) return null
+  const risk = Math.abs(state.addVwap - trade.stopLoss) * state.added
+  if (risk <= 0) return null
   return pnl / risk
 }
 
 export function holdDays(trade: Trade): number | null {
-  if (!trade.exitDate) return null
-  const start = Date.parse(`${trade.entryDate}T00:00:00Z`)
-  const end = Date.parse(`${trade.exitDate}T00:00:00Z`)
+  const state = positionState(trade)
+  if (!state.closed || !state.firstDate || !state.lastTrimDate) return null
+  const start = Date.parse(`${state.firstDate}T00:00:00Z`)
+  const end = Date.parse(`${state.lastTrimDate}T00:00:00Z`)
   if (Number.isNaN(start) || Number.isNaN(end)) return null
   return Math.max(0, Math.round((end - start) / 86_400_000))
 }
@@ -39,23 +46,38 @@ export function closedTradesChronological(trades: Trade[]): Trade[] {
   return trades
     .filter(isClosed)
     .sort((a, b) => {
-      const date = (a.exitDate ?? '').localeCompare(b.exitDate ?? '')
+      const aDate = positionState(a).lastTrimDate ?? ''
+      const bDate = positionState(b).lastTrimDate ?? ''
+      const date = aDate.localeCompare(bDate)
       if (date !== 0) return date
       return a.updatedAt - b.updatedAt
     })
 }
 
 export function equityCurve(trades: Trade[], startingCapital: number): EquityPoint[] {
-  let equity = startingCapital
-  return closedTradesChronological(trades).map((trade) => {
-    const pnl = realizedPnl(trade) ?? 0
-    equity += pnl
-    return {
-      date: trade.exitDate as string,
-      pnl,
-      equity,
+  const events = trades.flatMap((trade) =>
+    walkPosition(trade).trimEvents.map((event) => ({
+      date: event.date,
+      pnl: event.pnl,
       tradeId: trade.id,
       symbol: trade.symbol,
+      order: trade.updatedAt,
+    })),
+  )
+  events.sort((a, b) => {
+    const date = a.date.localeCompare(b.date)
+    if (date !== 0) return date
+    return a.order - b.order
+  })
+  let equity = startingCapital
+  return events.map((event) => {
+    equity += event.pnl
+    return {
+      date: event.date,
+      pnl: event.pnl,
+      equity,
+      tradeId: event.tradeId,
+      symbol: event.symbol,
     }
   })
 }
@@ -156,11 +178,13 @@ export interface JournalSummary {
 
 export function summarize(trades: Trade[], startingCapital: number): JournalSummary {
   const closed = closedTradesChronological(trades)
-  const open = trades.filter((t) => !isClosed(t)).sort((a, b) => b.entryDate.localeCompare(a.entryDate))
+  const open = trades
+    .filter((t) => !isClosed(t))
+    .sort((a, b) => b.entryDate.localeCompare(a.entryDate))
   const pnls = closed.map((t) => ({ trade: t, pnl: realizedPnl(t) ?? 0 }))
   const wins = pnls.filter((p) => p.pnl > 0).map((p) => p.trade)
   const losses = pnls.filter((p) => p.pnl < 0).map((p) => p.trade)
-  const totalPnl = pnls.reduce((sum, p) => sum + p.pnl, 0)
+  const totalPnl = trades.reduce((sum, trade) => sum + positionState(trade).realized, 0)
   const decided = wins.length + losses.length
   const grossWin = pnls.filter((p) => p.pnl > 0).reduce((sum, p) => sum + p.pnl, 0)
   const grossLoss = pnls.filter((p) => p.pnl < 0).reduce((sum, p) => sum + Math.abs(p.pnl), 0)
@@ -205,7 +229,7 @@ export function summarize(trades: Trade[], startingCapital: number): JournalSumm
     avgWin,
     avgLoss,
     profitFactor: grossLoss > 0 ? grossWin / grossLoss : grossWin > 0 ? null : 0,
-    expectancy: closed.length > 0 ? totalPnl / closed.length : 0,
+    expectancy: closed.length > 0 ? pnls.reduce((s, p) => s + p.pnl, 0) / closed.length : 0,
     avgR: rValues.length > 0 ? rValues.reduce((a, b) => a + b, 0) / rValues.length : null,
     avgHoldDays: holds.length > 0 ? holds.reduce((a, b) => a + b, 0) / holds.length : null,
     currentStreak: { kind: streakKind, length: streakLength },
