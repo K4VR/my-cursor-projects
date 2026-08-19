@@ -28,6 +28,21 @@ interface LedgerDB extends DBSchema {
 }
 
 let dbPromise: Promise<IDBPDatabase<LedgerDB>> | null = null
+let connection: IDBPDatabase<LedgerDB> | null = null
+
+type JournalDbEvent = { type: 'blocked' }
+const dbListeners = new Set<(event: JournalDbEvent) => void>()
+
+export function subscribeJournalDb(listener: (event: JournalDbEvent) => void) {
+  dbListeners.add(listener)
+  return () => {
+    dbListeners.delete(listener)
+  }
+}
+
+function emitDbEvent(event: JournalDbEvent) {
+  for (const listener of dbListeners) listener(event)
+}
 
 function getDb() {
   if (!dbPromise) {
@@ -45,6 +60,24 @@ function getDb() {
           db.createObjectStore('accounts', { keyPath: 'id' })
         }
       },
+      blocked() {
+        emitDbEvent({ type: 'blocked' })
+      },
+      blocking() {
+        connection?.close()
+        connection = null
+        dbPromise = null
+      },
+      terminated() {
+        connection = null
+        dbPromise = null
+      },
+    }).then((db) => {
+      connection = db
+      return db
+    }).catch((error) => {
+      dbPromise = null
+      throw error
     })
   }
   return dbPromise
@@ -54,7 +87,7 @@ function hydrateTrade(trade: Trade, fallbackAccountId = DEFAULT_TAXABLE_ID): Tra
   return ensureFills({
     ...trade,
     accountId: trade.accountId || fallbackAccountId,
-    symbol: trade.symbol.trim().toUpperCase(),
+    symbol: String(trade.symbol || '').trim().toUpperCase(),
   })
 }
 
@@ -120,7 +153,12 @@ export async function addTrades(trades: Trade[]): Promise<void> {
 
 export async function getAccounts(): Promise<Account[]> {
   const db = await getDb()
-  const rows = await db.getAll('accounts')
+  let rows: Account[] = []
+  try {
+    rows = await db.getAll('accounts')
+  } catch {
+    rows = []
+  }
   if (rows.length > 0) {
     return rows.sort((a, b) => a.createdAt - b.createdAt)
   }
@@ -156,6 +194,17 @@ export async function getSettings(): Promise<JournalSettings> {
   const db = await getDb()
   const record = await db.get('settings', 'default')
   return hydrateSettings(record)
+}
+
+export async function loadJournalState(): Promise<{
+  trades: Trade[]
+  settings: JournalSettings
+  accounts: Account[]
+}> {
+  const settings = await getSettings()
+  const trades = await getTrades()
+  const accounts = await getAccounts()
+  return { trades, settings, accounts }
 }
 
 export async function saveSettings(settings: JournalSettings): Promise<void> {

@@ -15,7 +15,7 @@ import {
   tradesForFilter,
   visibleAccounts,
 } from './accounts'
-import { getAccounts, getSettings, getTrade, getTrades, saveAccount, saveSettings, saveTrade } from './db'
+import { getTrade, loadJournalState, saveAccount, saveSettings, saveTrade, subscribeJournalDb } from './db'
 import { ensureFills } from './position'
 
 type JournalContextValue = {
@@ -23,6 +23,8 @@ type JournalContextValue = {
   trades: Trade[]
   settings: JournalSettings
   ready: boolean
+  blocked: boolean
+  loadError: string | null
   refresh: () => void
   updateSettings: (next: JournalSettings) => Promise<void>
   activeAccountId: AccountFilter
@@ -43,22 +45,46 @@ export function JournalProvider({ children }: { children: ReactNode }) {
   const [accounts, setAccounts] = useState<Account[]>([])
   const [settings, setSettings] = useState<JournalSettings>(DEFAULT_SETTINGS)
   const [ready, setReady] = useState(false)
+  const [blocked, setBlocked] = useState(false)
+  const [loadError, setLoadError] = useState<string | null>(null)
   const [tick, setTick] = useState(0)
 
   const refresh = useCallback(() => setTick((n) => n + 1), [])
 
   useEffect(() => {
+    return subscribeJournalDb((event) => {
+      if (event.type === 'blocked') setBlocked(true)
+    })
+  }, [])
+
+  useEffect(() => {
     let cancelled = false
+    const timer = window.setTimeout(() => {
+      if (!cancelled) setBlocked(true)
+    }, 4000)
     ;(async () => {
-      const [nextTrades, nextSettings, nextAccounts] = await Promise.all([getTrades(), getSettings(), getAccounts()])
-      if (cancelled) return
-      setTrades(nextTrades)
-      setAccounts(nextAccounts)
-      setSettings(nextSettings)
-      setReady(true)
+      try {
+        const next = await loadJournalState()
+        if (cancelled) return
+        setTrades(next.trades)
+        setAccounts(next.accounts)
+        setSettings(next.settings)
+        setLoadError(null)
+        setBlocked(false)
+        setReady(true)
+      } catch (err) {
+        if (cancelled) return
+        const message = err instanceof Error ? err.message : 'Could not open the journal in this browser.'
+        setLoadError(message)
+        setBlocked(false)
+        setReady(false)
+      } finally {
+        window.clearTimeout(timer)
+      }
     })()
     return () => {
       cancelled = true
+      window.clearTimeout(timer)
     }
   }, [tick])
 
@@ -112,6 +138,8 @@ export function JournalProvider({ children }: { children: ReactNode }) {
       trades,
       settings,
       ready,
+      blocked,
+      loadError,
       refresh,
       updateSettings,
       activeAccountId,
@@ -129,6 +157,8 @@ export function JournalProvider({ children }: { children: ReactNode }) {
       trades,
       settings,
       ready,
+      blocked,
+      loadError,
       refresh,
       updateSettings,
       activeAccountId,

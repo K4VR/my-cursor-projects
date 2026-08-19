@@ -14,7 +14,7 @@ const links = [
 ]
 
 export function JournalShell() {
-  const { ready, visibleAccounts, activeAccountId, setActiveAccountId } = useJournal()
+  const { ready, blocked, loadError, visibleAccounts, activeAccountId, setActiveAccountId } = useJournal()
 
   useEffect(() => {
     document.documentElement.classList.add('ledger-root')
@@ -75,7 +75,29 @@ export function JournalShell() {
         </div>
       </header>
       <main className="ledger-main">
-        <Outlet />
+        {!ready ? (
+          <div className="empty">
+            {loadError ? (
+              <p style={{ margin: 0 }}>{loadError}</p>
+            ) : blocked ? (
+              <>
+                <p style={{ margin: 0 }}>
+                  Another Ledger tab is holding the old data file. Close every other Ledger tab,
+                  then refresh.
+                </p>
+                <div className="ledger-actions" style={{ marginTop: '0.9rem' }}>
+                  <button type="button" className="l-btn l-btn-primary" onClick={() => window.location.reload()}>
+                    Refresh
+                  </button>
+                </div>
+              </>
+            ) : (
+              <p style={{ margin: 0 }}>Loading journal…</p>
+            )}
+          </div>
+        ) : (
+          <Outlet />
+        )}
       </main>
     </div>
   )
