@@ -10,11 +10,11 @@ This repository is a **temporary holding area**. Three separate apps currently l
 
 **Current combined site (until the split is finished):** https://k4vr.github.io/my-cursor-projects/
 
-## How to finish the split (about 3 minutes)
+## How to finish the split
 
-GitHub does not let Cursor create new repositories for you. You create three **empty** repos in the browser; then Cursor can copy each app over.
+The three empty repos exist. This Cloud Agent cannot write to them (it only has a GitHub token for `my-cursor-projects`).
 
-Follow **[SPLIT.md](SPLIT.md)** — it is written for someone new to GitHub.
+Follow **[SPLIT.md](SPLIT.md)** — one GitHub Codespace, one paste, and each app lands in its own repo.
 
 Until those repos exist, the apps remain in this one:
 
