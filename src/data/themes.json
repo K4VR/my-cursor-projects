@@ -1,0 +1,112 @@
+[
+  {
+    "id": "faith",
+    "name": "Faith",
+    "description": "Trust and confidence in God and His promises.",
+    "verses": [
+      { "book": "hebrews", "chapter": 11, "verse": 1, "note": "Substance of things hoped for" },
+      { "book": "romans", "chapter": 10, "verse": 17, "note": "Faith comes by hearing" },
+      { "book": "2-corinthians", "chapter": 5, "verse": 7, "note": "Walk by faith, not sight" },
+      { "book": "ephesians", "chapter": 2, "verse": 8, "note": "Saved through faith" },
+      { "book": "james", "chapter": 2, "verse": 17, "note": "Faith without works is dead" },
+      { "book": "mark", "chapter": 11, "verse": 22, "note": "Have faith in God" },
+      { "book": "galatians", "chapter": 2, "verse": 20, "note": "Live by the faith of the Son of God" },
+      { "book": "hebrews", "chapter": 11, "verse": 6, "note": "Without faith it is impossible to please him" }
+    ]
+  },
+  {
+    "id": "grace",
+    "name": "Grace",
+    "description": "God's unmerited favor toward humanity.",
+    "verses": [
+      { "book": "ephesians", "chapter": 2, "verse": 8, "note": "By grace are ye saved" },
+      { "book": "2-corinthians", "chapter": 12, "verse": 9, "note": "My grace is sufficient" },
+      { "book": "romans", "chapter": 5, "verse": 8, "note": "While we were yet sinners" },
+      { "book": "titus", "chapter": 2, "verse": 11, "note": "Grace of God that bringeth salvation" },
+      { "book": "john", "chapter": 1, "verse": 16, "note": "Grace for grace" },
+      { "book": "hebrews", "chapter": 4, "verse": 16, "note": "Throne of grace" },
+      { "book": "romans", "chapter": 6, "verse": 14, "note": "Under grace" }
+    ]
+  },
+  {
+    "id": "love",
+    "name": "Love",
+    "description": "The love of God and love toward others.",
+    "verses": [
+      { "book": "1-corinthians", "chapter": 13, "verse": 4, "note": "Charity suffereth long" },
+      { "book": "1-john", "chapter": 4, "verse": 8, "note": "God is love" },
+      { "book": "john", "chapter": 3, "verse": 16, "note": "God so loved the world" },
+      { "book": "john", "chapter": 13, "verse": 34, "note": "Love one another" },
+      { "book": "romans", "chapter": 8, "verse": 38, "note": "Nothing can separate us" },
+      { "book": "1-john", "chapter": 4, "verse": 19, "note": "We love him, because he first loved us" },
+      { "book": "matthew", "chapter": 22, "verse": 37, "note": "Love the Lord thy God" }
+    ]
+  },
+  {
+    "id": "salvation",
+    "name": "Salvation",
+    "description": "Redemption and eternal life through Christ.",
+    "verses": [
+      { "book": "romans", "chapter": 10, "verse": 9, "note": "Confess and believe" },
+      { "book": "acts", "chapter": 4, "verse": 12, "note": "None other name" },
+      { "book": "john", "chapter": 14, "verse": 6, "note": "The way, the truth, and the life" },
+      { "book": "ephesians", "chapter": 2, "verse": 8, "note": "Saved by grace through faith" },
+      { "book": "romans", "chapter": 6, "verse": 23, "note": "Gift of God is eternal life" },
+      { "book": "2-corinthians", "chapter": 5, "verse": 17, "note": "A new creature" },
+      { "book": "acts", "chapter": 16, "verse": 31, "note": "Believe on the Lord Jesus Christ" }
+    ]
+  },
+  {
+    "id": "comfort",
+    "name": "Comfort",
+    "description": "God's presence and peace in trouble.",
+    "verses": [
+      { "book": "psalms", "chapter": 23, "verse": 4, "note": "I will fear no evil" },
+      { "book": "matthew", "chapter": 11, "verse": 28, "note": "Come unto me" },
+      { "book": "2-corinthians", "chapter": 1, "verse": 3, "note": "God of all comfort" },
+      { "book": "isaiah", "chapter": 41, "verse": 10, "note": "Fear thou not" },
+      { "book": "philippians", "chapter": 4, "verse": 7, "note": "Peace of God" },
+      { "book": "psalms", "chapter": 46, "verse": 1, "note": "God is our refuge" },
+      { "book": "john", "chapter": 14, "verse": 27, "note": "Peace I leave with you" }
+    ]
+  },
+  {
+    "id": "wisdom",
+    "name": "Wisdom",
+    "description": "The fear of the Lord and godly understanding.",
+    "verses": [
+      { "book": "proverbs", "chapter": 9, "verse": 10, "note": "Fear of the Lord" },
+      { "book": "james", "chapter": 1, "verse": 5, "note": "Ask of God" },
+      { "book": "proverbs", "chapter": 3, "verse": 5, "note": "Trust in the Lord" },
+      { "book": "colossians", "chapter": 3, "verse": 16, "note": "Word of Christ dwell in you" },
+      { "book": "psalms", "chapter": 111, "verse": 10, "note": "Beginning of wisdom" },
+      { "book": "proverbs", "chapter": 4, "verse": 7, "note": "Wisdom is the principal thing" }
+    ]
+  },
+  {
+    "id": "hope",
+    "name": "Hope",
+    "description": "Confidence in God's future promises.",
+    "verses": [
+      { "book": "romans", "chapter": 15, "verse": 13, "note": "God of hope" },
+      { "book": "jeremiah", "chapter": 29, "verse": 11, "note": "Thoughts of peace" },
+      { "book": "romans", "chapter": 8, "verse": 28, "note": "All things work together" },
+      { "book": "hebrews", "chapter": 6, "verse": 19, "note": "Anchor of the soul" },
+      { "book": "psalms", "chapter": 42, "verse": 11, "note": "Hope thou in God" },
+      { "book": "1-peter", "chapter": 1, "verse": 3, "note": "Lively hope" }
+    ]
+  },
+  {
+    "id": "prayer",
+    "name": "Prayer",
+    "description": "Communion with God through petition and praise.",
+    "verses": [
+      { "book": "philippians", "chapter": 4, "verse": 6, "note": "Be careful for nothing" },
+      { "book": "1-thessalonians", "chapter": 5, "verse": 17, "note": "Pray without ceasing" },
+      { "book": "matthew", "chapter": 6, "verse": 9, "note": "After this manner therefore pray ye" },
+      { "book": "james", "chapter": 5, "verse": 16, "note": "Effectual fervent prayer" },
+      { "book": "jeremiah", "chapter": 33, "verse": 3, "note": "Call unto me" },
+      { "book": "matthew", "chapter": 7, "verse": 7, "note": "Ask, and it shall be given" }
+    ]
+  }
+]
