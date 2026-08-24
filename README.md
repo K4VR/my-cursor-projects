@@ -1,23 +1,32 @@
 # Jack's projects
 
-This repository is a **temporary holding area**. Three separate apps currently live here. They are being split into their own GitHub repositories so each project has its own README, site, and settings.
+These apps now each live in their **own** GitHub repository.
 
-| App | What it is | Stays here until | New repo (create this) | New site |
-|-----|------------|------------------|------------------------|----------|
-| **KJV Study** | Bible study tool | you create the new repo | [K4VR/kjv-study](https://github.com/K4VR/kjv-study) | https://k4vr.github.io/kjv-study/ |
-| **Ledger** | Stock trading journal | you create the new repo | [K4VR/ledger](https://github.com/K4VR/ledger) | https://k4vr.github.io/ledger/ |
-| **Fundamentals** | Advanced P2P stock analysis | you create the new repo | [K4VR/fundamentals](https://github.com/K4VR/fundamentals) | https://k4vr.github.io/fundamentals/ |
+| App | Repository | Site |
+|-----|------------|------|
+| **KJV Study** | [K4VR/kjv-study](https://github.com/K4VR/kjv-study) | https://k4vr.github.io/kjv-study/ |
+| **Ledger** | [K4VR/ledger](https://github.com/K4VR/ledger) | https://k4vr.github.io/ledger/ |
+| **Fundamentals** | [K4VR/fundamentals](https://github.com/K4VR/fundamentals) | https://k4vr.github.io/fundamentals/ |
 
-**Current combined site (until the split is finished):** https://k4vr.github.io/my-cursor-projects/
+This repository (`my-cursor-projects`) is **legacy**. It still has the old combined copy of the three apps. Prefer the repos above for any new work.
 
-## How to finish the split
+## Enable GitHub Pages on each new repo
 
-The three empty repos exist. This Cloud Agent cannot write to them (it only has a GitHub token for `my-cursor-projects`).
+For **kjv-study**, **ledger**, and **fundamentals**:
 
-Follow **[SPLIT.md](SPLIT.md)** — one GitHub Codespace, one paste, and each app lands in its own repo.
+1. Open the repo on GitHub
+2. **Settings → Pages**
+3. Under **Build and deployment → Source**, choose **GitHub Actions**
+4. Open the **Actions** tab → if a failed “Deploy GitHub Pages” run appears, open it and **Re-run jobs**
 
-Until those repos exist, the apps remain in this one:
+Sites may take a minute after the first successful workflow.
 
-- KJV Study — this folder (repo root)
-- Ledger — [`ledger/`](ledger/)
-- Fundamentals — [`fundamentals/`](fundamentals/)
+## Fundamentals live data
+
+GitHub Pages hosts the Fundamentals UI. For ticker fetching, connect this repo to Render using its `render.yaml` (see that repo’s README). Optional: set Actions variable `FUNDAMENTALS_API_URL` on the Fundamentals repo to your Render URL.
+
+## Cleanup (optional)
+
+- Delete the `split-repos` Personal Access Token if you still have it: https://github.com/settings/personal-access-tokens
+- Delete any Codespace for `my-cursor-projects` when you are done
+- Later, **Settings → General → Danger zone → Archive this repository** so `my-cursor-projects` becomes read-only history
