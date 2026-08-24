@@ -1,79 +1,53 @@
 # Split into three GitHub repositories
 
-You do **not** need npm or git on your computer. This is all done in the GitHub website.
+The three empty repos exist. Each app is already prepared as its own branch in `my-cursor-projects`.
 
-Cursor cannot create new GitHub repositories (the login it uses is only allowed to work inside `my-cursor-projects`). You create three empty repos; then reply in Cursor and the code will be copied over.
+## Why Cursor could not copy the files
 
-## Step 1 — Create `kjv-study`
+**Cursor → GitHub → All repositories** is the correct setting. Keep it that way.
 
-1. Open **https://github.com/new** (sign in as **K4VR** if asked).
-2. **Repository name:** `kjv-study`  
-   Type it exactly, lowercase, with the hyphen.
-3. **Description (optional):** `KJV Bible study tool`
-4. Choose **Public**.
-5. Leave these **unchecked** (important):
-   - Add a README file
-   - Add .gitignore
-   - Choose a license
-6. Click **Create repository**.
+A Cloud Agent still only gets a GitHub token for **the repo it was started on**. This agent was started on `my-cursor-projects`, so GitHub rejects writes to `kjv-study`, `ledger`, and `fundamentals` (`cursor[bot]` permission denied). That is a GitHub limit, not a mistake on your access screen.
 
-You should land on an empty repo page that says something like “set up Git”. You can leave that page.
+Finish the copy in the browser with **GitHub Codespaces** (no npm, no install on your computer). Codespaces logs in as **you**, so the push is allowed.
 
-## Step 2 — Create `ledger`
+## Finish the copy (about 2 minutes)
 
-Same as Step 1, but:
+1. Open **https://github.com/K4VR/my-cursor-projects**
+2. Click the green **Code** button
+3. Open the **Codespaces** tab
+4. Click **Create codespace on main**  
+   (If it asks for a branch, `cursor/split-into-repos-fa4e` is also fine.)
+5. Wait until the browser VS Code finishes loading (often 30–60 seconds)
+6. Click **Terminal → New Terminal** (or `` Ctrl+` ``)
+7. Paste this and press Enter:
 
-- Open **https://github.com/new** again
-- **Repository name:** `ledger`
-- **Description (optional):** `Local-first stock trading journal`
-- **Public**, no README / gitignore / license
-- **Create repository**
+```bash
+bash scripts/push-split-repos.sh
+```
 
-## Step 3 — Create `fundamentals`
+If `scripts/push-split-repos.sh` is missing in that codespace, paste this instead:
 
-Same again:
+```bash
+git fetch origin cursor/split-kjv-study-fa4e cursor/split-ledger-fa4e cursor/split-fundamentals-fa4e
+git push https://github.com/K4VR/kjv-study.git origin/cursor/split-kjv-study-fa4e:main
+git push https://github.com/K4VR/ledger.git origin/cursor/split-ledger-fa4e:main
+git push https://github.com/K4VR/fundamentals.git origin/cursor/split-fundamentals-fa4e:main
+```
 
-- **https://github.com/new**
-- **Repository name:** `fundamentals`
-- **Description (optional):** `Advanced P2P fundamental stock analysis`
-- **Public**, no README / gitignore / license
-- **Create repository**
+8. You should see three successful pushes. You can delete the codespace afterward (**Code → Codespaces → ⋯ → Delete**).
 
-## Step 4 — Let Cursor use the new repos
+Then reply in Cursor: **the push finished**.
 
-Cursor’s GitHub app must be allowed to see the new repositories.
+## After that
 
-1. Open **https://github.com/settings/installations**
-2. Find **Cursor** (or **Cursor Agent**) and click **Configure**
-3. Under **Repository access**:
-   - **All repositories** is simplest, or
-   - **Only select repositories** and add `kjv-study`, `ledger`, `fundamentals`, and `my-cursor-projects`
-4. Save
+| Repo | Site (enable Pages: Settings → Pages → Source: GitHub Actions) |
+|------|----------------------------------------------------------------|
+| https://github.com/K4VR/kjv-study | https://k4vr.github.io/kjv-study/ |
+| https://github.com/K4VR/ledger | https://k4vr.github.io/ledger/ |
+| https://github.com/K4VR/fundamentals | https://k4vr.github.io/fundamentals/ |
 
-## Step 5 — Reply here
-
-Send a message like:
-
-> The three repos are created: kjv-study, ledger, and fundamentals.
-
-Then Cursor will push each app into its own repo, set up GitHub Pages on each, and turn `my-cursor-projects` into a short directory of links.
-
-## What already exists (you can ignore this)
-
-Ready-to-copy branches are already in `my-cursor-projects` (each branch is one app only):
+Ready-to-copy branches (do **not** merge these into `main` of `my-cursor-projects`):
 
 - `cursor/split-kjv-study-fa4e`
 - `cursor/split-ledger-fa4e`
 - `cursor/split-fundamentals-fa4e`
-
-Do not merge those branches into `main` of this repo — they would replace everything with a single app.
-
-## After the split
-
-| Repo | Pages URL | Notes |
-|------|-----------|--------|
-| `kjv-study` | https://k4vr.github.io/kjv-study/ | Settings → Pages → Source: GitHub Actions |
-| `ledger` | https://k4vr.github.io/ledger/ | Same Pages setting |
-| `fundamentals` | https://k4vr.github.io/fundamentals/ | UI only on Pages; live ticker data still uses Render on **this** repo |
-
-You can archive `my-cursor-projects` later so it is read-only history. Nothing is deleted until you say so.
