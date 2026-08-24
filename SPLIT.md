@@ -2,51 +2,30 @@
 
 The three empty repos exist. Each app is ready on its own branch in `my-cursor-projects`.
 
-## Why you were not asked for a username / token
+## Finish the copy (Codespace + token)
 
-Codespaces already logs Git in automatically with a **limited** token that only works for `my-cursor-projects`. Git uses that token right away and never prompts — then GitHub returns:
+### A. Create a token (if you do not still have one)
 
-```text
-Permission to K4VR/kjv-study.git denied to K4VR.
-```
-
-You are not doing anything wrong. Put your Personal Access Token **in the push command** so Git uses that instead of the limited Codespace login.
-
-## Finish the copy
-
-### A. Create a token
-
-1. Open **https://github.com/settings/personal-access-tokens/new**
-2. **Token name:** `split-repos`
-3. **Expiration:** 7 days
-4. **Repository access:** **All repositories**
-5. **Permissions → Repository permissions → Contents:** **Read and write**
-6. **Generate token** → **copy** it  
-   Do **not** paste the token into Cursor chat.
+1. **https://github.com/settings/personal-access-tokens/new**
+2. Name: `split-repos` · Expiration: 7 days · Access: **All repositories**
+3. Permissions → **Contents: Read and write**
+4. Generate and copy the token (do not paste it into Cursor chat)
 
 ### B. In the Codespace terminal
 
-Fetch once:
-
 ```bash
 git fetch origin cursor/split-kjv-study-fa4e cursor/split-ledger-fa4e cursor/split-fundamentals-fa4e
-```
 
-Then set your token (paste it in place of `PASTE_TOKEN_HERE` — no spaces):
-
-```bash
 export TOKEN='PASTE_TOKEN_HERE'
+
+git push "https://x-access-token:${TOKEN}@github.com/K4VR/kjv-study.git" "refs/remotes/origin/cursor/split-kjv-study-fa4e:refs/heads/main"
+git push "https://x-access-token:${TOKEN}@github.com/K4VR/ledger.git" "refs/remotes/origin/cursor/split-ledger-fa4e:refs/heads/main"
+git push "https://x-access-token:${TOKEN}@github.com/K4VR/fundamentals.git" "refs/remotes/origin/cursor/split-fundamentals-fa4e:refs/heads/main"
 ```
 
-Push all three (no username prompt — the token is in the URL):
+Use `refs/heads/main` (not bare `main`) because the new repos are empty and Git cannot guess the branch name.
 
-```bash
-git push "https://x-access-token:${TOKEN}@github.com/K4VR/kjv-study.git" origin/cursor/split-kjv-study-fa4e:main
-git push "https://x-access-token:${TOKEN}@github.com/K4VR/ledger.git" origin/cursor/split-ledger-fa4e:main
-git push "https://x-access-token:${TOKEN}@github.com/K4VR/fundamentals.git" origin/cursor/split-fundamentals-fa4e:main
-```
-
-Success looks like `main -> main` or “created branch main”, not a 403.
+Success looks like `* [new branch] ... -> main`, not a 403 or refname error.
 
 ### C. Clean up
 
@@ -54,7 +33,7 @@ Success looks like `main -> main` or “created branch main”, not a 403.
 unset TOKEN
 ```
 
-Then delete the token at **https://github.com/settings/personal-access-tokens** → find `split-repos` → **Delete**.
+Delete the token at **https://github.com/settings/personal-access-tokens**.
 
 Reply in Cursor: **the push finished**.
 
